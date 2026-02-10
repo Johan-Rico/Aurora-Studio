@@ -11,17 +11,17 @@ class Product(models.Model):
 class Order(models.Model):
     STATUS_CHOICES = [
         ('pendiente', 'Pendiente'),
-        ('pagado', 'Pagado'),
         ('enviado', 'Enviado'),
     ]
     
     date = models.DateField(auto_now_add=True)
     time = models.TimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendiente')
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     products = models.ManyToManyField(Product, through="OrderItem", related_name="orders")
 
     def __str__(self) -> str:
-        return f"Order {self.pk} - {self.status}"
+        return f"Order {self.pk} - {self.status} - ${self.total}"
 
 
 class OrderItem(models.Model):
