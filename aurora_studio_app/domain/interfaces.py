@@ -8,7 +8,7 @@ from typing import Optional
 # TYPE_CHECKING import para evitar imports circulares
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-	from aurora_studio_app.models import Servicio, Cliente, Reserva, Disponibilidad
+	from aurora_studio_app.models import Servicio, Cliente, Reserva, Disponibilidad, DetalleCita
 
 
 # ========== INTERFACES DE NOTIFICACIÓN ==========
@@ -70,6 +70,14 @@ class RepositorioCliente(ABC):
 
 class RepositorioReserva(ABC):
 	"""Repositorio para operaciones con Reserva."""
+
+	@abstractmethod
+	def guardar_reserva_con_detalles(self, reserva: Reserva, detalles: list[DetalleCita]) -> Reserva:
+		raise NotImplementedError
+
+	@abstractmethod
+	def obtener_por_email_y_codigo(self, email: str, codigo_reserva: str) -> Optional[Reserva]:
+		raise NotImplementedError
 	
 	@abstractmethod
 	def buscar_por_fecha(self, fecha: date) -> list[Reserva]:

@@ -9,7 +9,7 @@ from aurora_studio_app.domain.interfaces import (
 	RepositorioReserva,
 	RepositorioDisponibilidad,
 )
-from aurora_studio_app.models import Servicio, Cliente, Reserva, Disponibilidad, Usuario
+from aurora_studio_app.models import Servicio, Cliente, Reserva, Disponibilidad, Usuario, DetalleCita
 
 
 class RepositorioServicioDjango(RepositorioServicio):
@@ -51,6 +51,23 @@ class RepositorioClienteDjango(RepositorioCliente):
 
 class RepositorioReservaDjango(RepositorioReserva):
 	"""Implementación de RepositorioReserva usando Django ORM."""
+
+	def guardar_reserva_con_detalles(self, reserva: Reserva, detalles: list[DetalleCita]) -> Reserva:
+		reserva.save()
+		for detalle in detalles:
+			detalle.reserva = reserva
+		DetalleCita.objects.bulk_create(detalles)
+		return reserva
+
+	def obtener_por_email_y_codigo(self, email: str, codigo_reserva: str) -> Optional[Reserva]:
+		try:
+			return Reserva.objects.select_related('cliente').get(
+				cliente__email=email,
+				codigo_reserva=codigo_reserva,
+				tipo='cita',
+			)
+		except Reserva.DoesNotExist:
+			return None
 	
 	def buscar_por_fecha(self, fecha: date) -> list[Reserva]:
 		return list(Reserva.objects.filter(fecha=fecha))

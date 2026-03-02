@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import date, datetime, time, timedelta
 from decimal import Decimal
+import uuid
 
 from aurora_studio_app.models import Cliente, DetalleCita, Reserva, Servicio
 
@@ -45,8 +46,8 @@ class ConstructorReserva:
 		self._servicios.extend(servicios)
 		return self
 
-	def construir(self) -> Reserva:
-		"""Construye y guarda la reserva con sus detalles."""
+	def construir(self) -> tuple[Reserva, list[DetalleCita]]:
+		"""Construye la reserva y detalles en memoria (sin persistir)."""
 		
 		# 1. Validar campos requeridos
 		self._validar_campos_requeridos()
@@ -55,28 +56,34 @@ class ConstructorReserva:
 		minutos_totales = self._calcular_minutos_totales(self._servicios)
 		hora_fin = self._calcular_hora_fin(self._fecha, self._hora_inicio, minutos_totales)
 
-		# 3. Crear y guardar la reserva
-		reserva = Reserva.objects.create(
+		# 3. Generar código de reserva único
+		codigo_reserva = self._generar_codigo_unico()
+
+		# 4. Construir reserva en memoria
+		reserva = Reserva(
 			cliente=self._cliente,
 			fecha=self._fecha,
 			hora_inicio=self._hora_inicio,
 			hora_fin=hora_fin,
+			codigo_reserva=codigo_reserva,
 			tipo="cita",
 		)
 
-		# 4. Crear y guardar los detalles
-		for servicio in self._servicios:
-			DetalleCita.objects.create(
+		# 5. Construir detalles en memoria
+		detalles = [
+			DetalleCita(
 				reserva=reserva,
 				servicio=servicio,
 				precio_aplicado=servicio.precio,
 			)
+			for servicio in self._servicios
+		]
 
-		# 5. Reiniciar el constructor para poder reutilizarlo
+		# 6. Reiniciar el constructor para poder reutilizarlo
 		self.reiniciar()
 
-		# 6. Retornar la reserva creada
-		return reserva
+		# 7. Retornar la reserva y sus detalles
+		return reserva, detalles
 
 	def _validar_campos_requeridos(self) -> None:
 		if self._cliente is None:
@@ -109,6 +116,18 @@ class ConstructorReserva:
 			raise ErrorConstructorReserva("La cita no puede terminar en un día distinto")
 		return fecha_hora_fin.time()
 
+	def _generar_codigo_unico(self) -> str:
+		for _ in range(10):
+			if self._generador_codigo:
+				codigo = self._generador_codigo.generar()
+			else:
+				codigo = uuid.uuid4().hex[:8].upper()
+
+			if not Reserva.objects.filter(codigo_reserva=codigo).exists():
+				return codigo
+
+		raise ErrorConstructorReserva("No fue posible generar un código de reserva único")
+
 
 class ConstructorBloqueoReserva:
 	"""Constructor para crear bloqueos administrativos de horarios."""
@@ -136,7 +155,7 @@ class ConstructorBloqueoReserva:
 		return self
 
 	def construir(self) -> Reserva:
-		"""Construye y guarda el bloqueo de reserva."""
+		"""Construye el bloqueo en memoria (sin persistir)."""
 		
 		# 1. Validar
 		if self._fecha is None:
@@ -146,8 +165,8 @@ class ConstructorBloqueoReserva:
 		if self._hora_inicio >= self._hora_fin:
 			raise ErrorConstructorReserva("La hora de inicio del bloqueo debe ser menor a la hora fin")
 
-		# 2. Crear y guardar
-		reserva = Reserva.objects.create(
+		# 2. Crear en memoria
+		reserva = Reserva(
 			fecha=self._fecha,
 			hora_inicio=self._hora_inicio,
 			hora_fin=self._hora_fin,

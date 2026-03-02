@@ -31,6 +31,11 @@ class Cliente(Usuario):
 class Servicio(models.Model):
     """Servicios ofrecidos por el negocio."""
     nombre = models.CharField(max_length=200)
+    categoria = models.CharField(
+        max_length=100,
+        default="General",
+        help_text="Categoría del servicio (ej: Uñas, Cejas, Pestañas, Facial)",
+    )
     descripcion = models.TextField()
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     duracion = models.DecimalField(
@@ -40,7 +45,7 @@ class Servicio(models.Model):
     )
 
     def __str__(self) -> str:
-        return f"{self.nombre} - ${self.precio} ({self.duracion}h)"
+        return f"[{self.categoria}] {self.nombre} - ${self.precio} ({self.duracion}h)"
 
 
 class Reserva(models.Model):
@@ -61,6 +66,13 @@ class Reserva(models.Model):
     fecha = models.DateField()
     hora_inicio = models.TimeField()
     hora_fin = models.TimeField()
+    codigo_reserva = models.CharField(
+        max_length=20,
+        unique=True,
+        null=True,
+        blank=True,
+        help_text="Código único para que la clienta gestione su cita",
+    )
     tipo = models.CharField(max_length=20, choices=TIPO_CHOICES, default='cita')
 
     class Meta:
@@ -69,7 +81,8 @@ class Reserva(models.Model):
 
     def __str__(self) -> str:
         cliente_info = f" - {self.cliente.nombre}" if self.cliente else ""
-        return f"{self.get_tipo_display()} - {self.fecha} {self.hora_inicio}-{self.hora_fin}{cliente_info}"
+        codigo_info = f" [{self.codigo_reserva}]" if self.codigo_reserva else ""
+        return f"{self.get_tipo_display()} - {self.fecha} {self.hora_inicio}-{self.hora_fin}{cliente_info}{codigo_info}"
 
 
 class DetalleCita(models.Model):

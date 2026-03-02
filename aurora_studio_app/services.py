@@ -105,6 +105,53 @@ class DisponibilidadService:
             raise ValueError("El horario seleccionado ya está ocupado")
         
         return True
+
+    def consultar_horarios_disponibles(
+        self,
+        fecha: date,
+        duracion_horas: Decimal = Decimal('1.00'),
+    ) -> List[str]:
+        """Retorna horas de inicio disponibles para una fecha dada."""
+
+        if fecha < date.today():
+            raise ValueError("No se pueden consultar horarios en fechas pasadas")
+
+        if duracion_horas <= 0:
+            raise ValueError("La duración debe ser mayor a cero")
+
+        disponibilidad = self.repositorio_disponibilidad.obtener_por_dia_semana(fecha.weekday())
+        if disponibilidad is None:
+            return []
+
+        duracion_minutos = int(Decimal(duracion_horas) * Decimal('60'))
+        if duracion_minutos <= 0:
+            raise ValueError("La duración debe ser mayor a cero")
+
+        inicio_jornada = datetime.combine(fecha, disponibilidad.hora_apertura)
+        fin_jornada = datetime.combine(fecha, disponibilidad.hora_cierre)
+
+        horarios_disponibles: List[str] = []
+        cursor = inicio_jornada
+        step = timedelta(minutes=30)
+        duracion_delta = timedelta(minutes=duracion_minutos)
+
+        while cursor + duracion_delta <= fin_jornada:
+            hora_inicio = cursor.time()
+            hora_fin = (cursor + duracion_delta).time()
+
+            dentro_horario = self._esta_dentro_horario_atencion(
+                fecha.weekday(),
+                hora_inicio,
+                hora_fin,
+            )
+            solapa = self._hay_reservas_solapadas(fecha, hora_inicio, hora_fin)
+
+            if dentro_horario and not solapa:
+                horarios_disponibles.append(hora_inicio.strftime('%H:%M'))
+
+            cursor += step
+
+        return horarios_disponibles
     
     def _esta_dentro_horario_atencion(
         self, 
@@ -202,14 +249,14 @@ class ReservaService:
         # 6. Usar Builder para crear la reserva
         try:
             constructor = ConstructorReserva(generador_codigo=self.generador_codigo)
-            reserva = (
+            reserva, detalles = (
                 constructor
                 .para_cliente(cliente)
                 .para_fecha_hora(datos['fecha'], datos['hora'])
                 .agregar_servicios(servicios)
                 .construir()
             )
-            # El constructor ya guardó la reserva y los detalles en DB
+            reserva = self.repositorio_reserva.guardar_reserva_con_detalles(reserva, detalles)
             
         except ErrorConstructorReserva as e:
             raise ValueError(f"Error al construir la reserva: {str(e)}")
@@ -220,8 +267,8 @@ class ReservaService:
             precio_total = sum(s.precio for s in servicios)
             nombres_servicios = [s.nombre for s in servicios]
             
-            # Generar código
-            codigo_reserva = self.generador_codigo.generar() if self.generador_codigo else str(reserva.id)
+            # Usar el código persistido de la reserva
+            codigo_reserva = reserva.codigo_reserva or str(reserva.id)
             
             self.enviador_notificacion.enviar_confirmacion_reserva(
                 correo_destino=cliente.email,
@@ -261,4 +308,23 @@ class ReservaService:
             raise ValueError("No se pueden cancelar reservas pasadas")
         
         # Eliminar la reserva
+        self.repositorio_reserva.eliminar(reserva)
+
+    def cancelar_reserva_por_codigo(self, email: str, codigo_reserva: str) -> None:
+        """Cancela una reserva usando email de clienta y código único."""
+
+        if not email or not codigo_reserva:
+            raise ValueError("Email y código de reserva son requeridos")
+
+        reserva = self.repositorio_reserva.obtener_por_email_y_codigo(
+            email=email,
+            codigo_reserva=codigo_reserva,
+        )
+
+        if reserva is None:
+            raise ValueError("No existe una reserva con ese email y código")
+
+        if reserva.fecha < date.today():
+            raise ValueError("No se pueden cancelar reservas pasadas")
+
         self.repositorio_reserva.eliminar(reserva)
