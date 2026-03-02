@@ -1,6 +1,7 @@
 ﻿from typing import List, Dict, Optional
 from datetime import datetime, date, time, timedelta
 from decimal import Decimal
+from django.db import transaction
 from .models import Servicio, Cliente, Reserva, DetalleCita, Disponibilidad
 from .domain.builders import ConstructorReserva, ErrorConstructorReserva
 from .domain.interfaces import (
@@ -218,8 +219,8 @@ class ReservaService:
         self.enviador_notificacion = enviador_notificacion
         self.generador_codigo = generador_codigo
     
+    @transaction.atomic
     def crear_reserva_completa(self, datos: Dict) -> Reserva:
-        """Orquesta la creación completa de una reserva con todas las validaciones."""
         
         # 1. Validar datos básicos
         self._validar_datos_reserva(datos)
