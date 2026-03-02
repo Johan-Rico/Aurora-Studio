@@ -1,154 +1,160 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 from datetime import date, datetime, time, timedelta
 from decimal import Decimal
 
 from aurora_studio_app.models import Cliente, DetalleCita, Reserva, Servicio
 
-from .interfaces import ReservationCodeGenerator
+from .interfaces import GeneradorCodigoReserva
 
 
-class ReservationBuilderError(ValueError):
+class ErrorConstructorReserva(Exception):
+	"""Excepción personalizada para errores en el constructor de reservas."""
 	pass
 
 
-@dataclass(frozen=True)
-class ReservationBuildResult:
-	reservation: Reserva
-	details: list[DetalleCita]
-	total_price: Decimal
-	total_minutes: int
-	reservation_code: str | None
+class ConstructorReserva:
+	"""Constructor para crear reservas de citas con validaciones."""
+	
+	def __init__(self, generador_codigo: GeneradorCodigoReserva | None = None) -> None:
+		self._generador_codigo = generador_codigo
+		self.reiniciar()
 
-
-class ReservationBuilder:
-	def __init__(self, code_generator: ReservationCodeGenerator | None = None) -> None:
-		self._code_generator = code_generator
-		self._client: Cliente | None = None
-		self._date: date | None = None
-		self._start_time: time | None = None
-		self._services: list[Servicio] = []
-
-	def for_client(self, client: Cliente) -> ReservationBuilder:
-		self._client = client
+	def reiniciar(self) -> ConstructorReserva:
+		"""Reinicia todos los atributos del constructor."""
+		self._cliente: Cliente | None = None
+		self._fecha: date | None = None
+		self._hora_inicio: time | None = None
+		self._servicios: list[Servicio] = []
 		return self
 
-	def for_datetime(self, booking_date: date, start_time: time) -> ReservationBuilder:
-		self._date = booking_date
-		self._start_time = start_time
+	def para_cliente(self, cliente: Cliente) -> ConstructorReserva:
+		self._cliente = cliente
 		return self
 
-	def with_service(self, service: Servicio) -> ReservationBuilder:
-		self._services.append(service)
+	def para_fecha_hora(self, fecha_reserva: date, hora_inicio: time) -> ConstructorReserva:
+		self._fecha = fecha_reserva
+		self._hora_inicio = hora_inicio
 		return self
 
-	def with_services(self, services: list[Servicio]) -> ReservationBuilder:
-		self._services.extend(services)
+	def agregar_servicio(self, servicio: Servicio) -> ConstructorReserva:
+		self._servicios.append(servicio)
 		return self
 
-	def build(self) -> ReservationBuildResult:
-		self._validate_required_fields()
+	def agregar_servicios(self, servicios: list[Servicio]) -> ConstructorReserva:
+		self._servicios.extend(servicios)
+		return self
 
-		total_minutes = self._calculate_total_minutes(self._services)
-		total_price = self._calculate_total_price(self._services)
-		end_time = self._calculate_end_time(self._date, self._start_time, total_minutes)
+	def construir(self) -> Reserva:
+		"""Construye y guarda la reserva con sus detalles."""
+		
+		# 1. Validar campos requeridos
+		self._validar_campos_requeridos()
 
-		reservation = Reserva(
-			fecha=self._date,
-			hora_inicio=self._start_time,
-			hora_fin=end_time,
+		# 2. Calcular duración y hora de fin
+		minutos_totales = self._calcular_minutos_totales(self._servicios)
+		hora_fin = self._calcular_hora_fin(self._fecha, self._hora_inicio, minutos_totales)
+
+		# 3. Crear y guardar la reserva
+		reserva = Reserva.objects.create(
+			cliente=self._cliente,
+			fecha=self._fecha,
+			hora_inicio=self._hora_inicio,
+			hora_fin=hora_fin,
 			tipo="cita",
 		)
 
-		details = [
-			DetalleCita(
-				reserva=reservation,
-				servicio=service,
-				precio_aplicado=service.precio,
+		# 4. Crear y guardar los detalles
+		for servicio in self._servicios:
+			DetalleCita.objects.create(
+				reserva=reserva,
+				servicio=servicio,
+				precio_aplicado=servicio.precio,
 			)
-			for service in self._services
-		]
 
-		reservation_code = self._code_generator.generate() if self._code_generator else None
+		# 5. Reiniciar el constructor para poder reutilizarlo
+		self.reiniciar()
 
-		return ReservationBuildResult(
-			reservation=reservation,
-			details=details,
-			total_price=total_price,
-			total_minutes=total_minutes,
-			reservation_code=reservation_code,
-		)
+		# 6. Retornar la reserva creada
+		return reserva
 
-	def _validate_required_fields(self) -> None:
-		if self._client is None:
-			raise ReservationBuilderError("El cliente es obligatorio para construir una reserva")
-		if self._date is None:
-			raise ReservationBuilderError("La fecha es obligatoria para construir una reserva")
-		if self._start_time is None:
-			raise ReservationBuilderError("La hora de inicio es obligatoria para construir una reserva")
-		if not self._services:
-			raise ReservationBuilderError("Debe seleccionar al menos un servicio")
+	def _validar_campos_requeridos(self) -> None:
+		if self._cliente is None:
+			raise ErrorConstructorReserva("El cliente es obligatorio para construir una reserva")
+		if self._fecha is None:
+			raise ErrorConstructorReserva("La fecha es obligatoria para construir una reserva")
+		if self._hora_inicio is None:
+			raise ErrorConstructorReserva("La hora de inicio es obligatoria para construir una reserva")
+		if not self._servicios:
+			raise ErrorConstructorReserva("Debe seleccionar al menos un servicio")
 
 	@staticmethod
-	def _calculate_total_minutes(services: list[Servicio]) -> int:
-		total_minutes = 0
-		for service in services:
-			duration_hours = Decimal(service.duracion)
-			minutes = int(duration_hours * Decimal("60"))
-			if minutes <= 0:
-				raise ReservationBuilderError(
-					f"El servicio '{service.nombre}' tiene una duración inválida"
+	def _calcular_minutos_totales(servicios: list[Servicio]) -> int:
+		minutos_totales = 0
+		for servicio in servicios:
+			horas_duracion = Decimal(servicio.duracion)
+			minutos = int(horas_duracion * Decimal("60"))
+			if minutos <= 0:
+				raise ErrorConstructorReserva(
+					f"El servicio '{servicio.nombre}' tiene una duración inválida"
 				)
-			total_minutes += minutes
-		return total_minutes
+			minutos_totales += minutos
+		return minutos_totales
 
 	@staticmethod
-	def _calculate_total_price(services: list[Servicio]) -> Decimal:
-		total = Decimal("0")
-		for service in services:
-			total += Decimal(service.precio)
-		return total
-
-	@staticmethod
-	def _calculate_end_time(booking_date: date, start_time: time, minutes: int) -> time:
-		start_dt = datetime.combine(booking_date, start_time)
-		end_dt = start_dt + timedelta(minutes=minutes)
-		if end_dt.date() != booking_date:
-			raise ReservationBuilderError("La cita no puede terminar en un día distinto")
-		return end_dt.time()
+	def _calcular_hora_fin(fecha_reserva: date, hora_inicio: time, minutos: int) -> time:
+		fecha_hora_inicio = datetime.combine(fecha_reserva, hora_inicio)
+		fecha_hora_fin = fecha_hora_inicio + timedelta(minutes=minutos)
+		if fecha_hora_fin.date() != fecha_reserva:
+			raise ErrorConstructorReserva("La cita no puede terminar en un día distinto")
+		return fecha_hora_fin.time()
 
 
-class BlockReservationBuilder:
+class ConstructorBloqueoReserva:
+	"""Constructor para crear bloqueos administrativos de horarios."""
+	
 	def __init__(self) -> None:
-		self._date: date | None = None
-		self._start_time: time | None = None
-		self._end_time: time | None = None
+		self.reiniciar()
 
-	def for_date(self, block_date: date) -> BlockReservationBuilder:
-		self._date = block_date
+	def reiniciar(self) -> ConstructorBloqueoReserva:
+		"""Reinicia todos los atributos del constructor."""
+		self._fecha: date | None = None
+		self._hora_inicio: time | None = None
+		self._hora_fin: time | None = None
 		return self
 
-	def from_time(self, start_time: time) -> BlockReservationBuilder:
-		self._start_time = start_time
+	def para_fecha(self, fecha_bloqueo: date) -> ConstructorBloqueoReserva:
+		self._fecha = fecha_bloqueo
 		return self
 
-	def to_time(self, end_time: time) -> BlockReservationBuilder:
-		self._end_time = end_time
+	def desde_hora(self, hora_inicio: time) -> ConstructorBloqueoReserva:
+		self._hora_inicio = hora_inicio
 		return self
 
-	def build(self) -> Reserva:
-		if self._date is None:
-			raise ReservationBuilderError("La fecha del bloqueo es obligatoria")
-		if self._start_time is None or self._end_time is None:
-			raise ReservationBuilderError("Debe definir hora de inicio y fin del bloqueo")
-		if self._start_time >= self._end_time:
-			raise ReservationBuilderError("La hora de inicio del bloqueo debe ser menor a la hora fin")
+	def hasta_hora(self, hora_fin: time) -> ConstructorBloqueoReserva:
+		self._hora_fin = hora_fin
+		return self
 
-		return Reserva(
-			fecha=self._date,
-			hora_inicio=self._start_time,
-			hora_fin=self._end_time,
+	def construir(self) -> Reserva:
+		"""Construye y guarda el bloqueo de reserva."""
+		
+		# 1. Validar
+		if self._fecha is None:
+			raise ErrorConstructorReserva("La fecha del bloqueo es obligatoria")
+		if self._hora_inicio is None or self._hora_fin is None:
+			raise ErrorConstructorReserva("Debe definir hora de inicio y fin del bloqueo")
+		if self._hora_inicio >= self._hora_fin:
+			raise ErrorConstructorReserva("La hora de inicio del bloqueo debe ser menor a la hora fin")
+
+		# 2. Crear y guardar
+		reserva = Reserva.objects.create(
+			fecha=self._fecha,
+			hora_inicio=self._hora_inicio,
+			hora_fin=self._hora_fin,
 			tipo="bloqueo",
 		)
+
+		# 3. Reiniciar
+		self.reiniciar()
+		return reserva
 

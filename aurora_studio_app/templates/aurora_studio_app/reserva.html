@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hacer Reserva</title>
+</head>
+<body>
+    <h1>Hacer Reserva</h1>
+    <a href="{% url 'home' %}">Volver</a>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <h3>Datos del Cliente</h3>
+        <input type="text" name="nombre" placeholder="Nombre" required><br>
+        <input type="email" name="email" placeholder="Email" required><br>
+        <input type="tel" name="telefono" placeholder="Teléfono" required><br>
+        
+        <h3>Fecha y Hora</h3>
+        <input type="date" name="fecha" required><br>
+        <select name="hora_inicio" required>
+            <option value="">Seleccionar hora</option>
+            <option value="08:00">08:00</option>
+            <option value="09:00">09:00</option>
+            <option value="10:00">10:00</option>
+            <option value="11:00">11:00</option>
+            <option value="12:00">12:00</option>
+            <option value="13:00">13:00</option>
+            <option value="14:00">14:00</option>
+            <option value="15:00">15:00</option>
+            <option value="16:00">16:00</option>
+            <option value="17:00">17:00</option>
+            <option value="18:00">18:00</option>
+            <option value="19:00">19:00</option>
+            <option value="20:00">20:00</option>
+        </select><br>
+        
+        <h3>Servicios</h3>
+        {% for servicio in servicios %}
+            <label>
+                <input type="checkbox" name="servicios" value="{{ servicio.id }}">
+                {{ servicio.nombre }} - ${{ servicio.precio }}
+            </label><br>
+        {% endfor %}
+        
+        <br>
+        <button type="submit">Crear Reserva</button>
+    </form>
+    
+    {% if mensaje %}
+        <p><strong>{{ mensaje }}</strong></p>
+    {% endif %}
+</body>
+</html>

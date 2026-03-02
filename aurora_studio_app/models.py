@@ -15,7 +15,7 @@ class Usuario(models.Model):
 
 
 class Cliente(Usuario):
-    """Cliente que realiza reservas, hereda de Usuario."""
+    """Cliente que realiza reservas."""
     telefono = models.CharField(
         max_length=15,
         validators=[RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Número de teléfono inválido")]
@@ -50,6 +50,14 @@ class Reserva(models.Model):
         ('bloqueo', 'Bloqueo Administrativo'),
     ]
     
+    cliente = models.ForeignKey(
+        Cliente,
+        on_delete=models.CASCADE,
+        related_name='reservas',
+        null=True,
+        blank=True,
+        help_text="Cliente que hace la reserva (null para bloqueos administrativos)"
+    )
     fecha = models.DateField()
     hora_inicio = models.TimeField()
     hora_fin = models.TimeField()
@@ -60,7 +68,8 @@ class Reserva(models.Model):
         verbose_name_plural = "Reservas"
 
     def __str__(self) -> str:
-        return f"{self.get_tipo_display()} - {self.fecha} {self.hora_inicio}-{self.hora_fin}"
+        cliente_info = f" - {self.cliente.nombre}" if self.cliente else ""
+        return f"{self.get_tipo_display()} - {self.fecha} {self.hora_inicio}-{self.hora_fin}{cliente_info}"
 
 
 class DetalleCita(models.Model):
