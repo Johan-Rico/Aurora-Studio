@@ -1,21 +1,1001 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aurora Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #fff4f9;
+            --bg-soft: #ffeef7;
+            --card: #ffffff;
+            --peach: #ffd4e4;
+            --rose: #ffb7d2;
+            --rose-strong: #f77dad;
+            --rose-glow: #ffdeec;
+            --text-main: #4f3444;
+            --text-soft: #7f6071;
+            --accent: #ef6ea2;
+            --accent-dark: #d95a8f;
+            --shadow: 0 14px 35px rgba(169, 88, 130, 0.2);
+            --radius-xl: 26px;
+            --radius-lg: 18px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Nunito", sans-serif;
+            color: var(--text-main);
+            background:
+                radial-gradient(circle at 8% 12%, rgba(255, 183, 210, 0.7), transparent 30%),
+                radial-gradient(circle at 88% 5%, rgba(255, 210, 231, 0.85), transparent 31%),
+                radial-gradient(circle at 78% 82%, rgba(255, 154, 194, 0.45), transparent 35%),
+                linear-gradient(140deg, var(--bg-main), #fff7fb 40%, var(--bg-soft));
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+
+        .page-shell {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 26px 18px 42px;
+        }
+
+        .topbar {
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            box-shadow: var(--shadow);
+            border-radius: var(--radius-xl);
+            padding: 16px 18px;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            animation: slideDown 0.7s ease;
+        }
+
+        .topbar::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(120deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+            pointer-events: none;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: linear-gradient(150deg, #ff9cc5, #ffd4e8);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 18px rgba(239, 110, 162, 0.35);
+        }
+
+        .brand-mark svg {
+            width: 20px;
+            height: 20px;
+            stroke: #fff;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 18px;
+            margin-bottom: 26px;
+        }
+
+        .hero-main,
+        .hero-gallery {
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            background: var(--card);
+            border: 1px solid rgba(255, 255, 255, 0.95);
+        }
+
+        .hero-main {
+            padding: 32px 30px;
+            position: relative;
+            isolation: isolate;
+            animation: fadeInUp 0.9s ease;
+        }
+
+        .hero-main::before {
+            content: "";
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            right: -80px;
+            top: -95px;
+            background: linear-gradient(160deg, var(--rose-glow), var(--peach));
+            border-radius: 42% 58% 63% 37% / 49% 37% 63% 51%;
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        .kicker {
+            font-size: 0.85rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-soft);
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            font-family: "Playfair Display", serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            line-height: 1.1;
+            margin-bottom: 14px;
+        }
+
+        .hero-copy {
+            color: var(--text-soft);
+            max-width: 52ch;
+            margin-bottom: 24px;
+        }
+
+        .cta-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            text-decoration: none;
+            border-radius: 999px;
+            padding: 10px 18px;
+            font-weight: 700;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--rose-strong));
+            color: #fff;
+            box-shadow: 0 8px 20px rgba(239, 110, 162, 0.4);
+        }
+
+        .btn-soft {
+            background: #fff;
+            color: var(--text-main);
+            border: 1px solid #ffd6e8;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .hero-gallery {
+            padding: 14px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 160px 160px;
+            gap: 12px;
+            animation: fadeInUp 1.1s ease;
+        }
+
+        .img-slot {
+            border-radius: var(--radius-lg);
+            padding: 14px;
+            display: flex;
+            align-items: flex-end;
+            color: #6a5a72;
+            font-weight: 700;
+            font-size: 0.88rem;
+            border: 2px dashed rgba(155, 96, 130, 0.28);
+            background: linear-gradient(140deg, #fff, #fff0f7);
+            transition: transform 0.25s ease, border-color 0.25s ease;
+        }
+
+        .img-slot:hover {
+            transform: translateY(-3px);
+            border-color: rgba(223, 79, 137, 0.45);
+        }
+
+        .img-slot.large {
+            grid-column: span 2;
+            background: linear-gradient(145deg, #fff9fc, #ffe8f3);
+        }
+
+        .section-title {
+            font-family: "Playfair Display", serif;
+            font-size: 1.75rem;
+            margin-bottom: 6px;
+        }
+
+        .section-sub {
+            color: var(--text-soft);
+            margin-bottom: 16px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 14px;
+            margin-bottom: 26px;
+        }
+
+        .service-card {
+            background: rgba(255, 247, 252, 0.9);
+            border-radius: var(--radius-lg);
+            padding: 18px;
+            border: 1px solid #ffe0ed;
+            box-shadow: var(--shadow);
+            transform: translateY(14px);
+            opacity: 0;
+            animation: reveal 0.55s ease forwards;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 18px 30px rgba(169, 88, 130, 0.28);
+        }
+
+        .service-meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .pill {
+            font-size: 0.8rem;
+            background: #fff;
+            border: 1px solid #ffd5e7;
+            color: #7b667f;
+            border-radius: 999px;
+            padding: 4px 10px;
+        }
+
+        .info-strip {
+            margin: 0 0 18px;
+            border-radius: var(--radius-xl);
+            background: linear-gradient(100deg, #ffd9ea, #ffc0dc 45%, #ffd3e6);
+            color: #6f3551;
+            box-shadow: var(--shadow);
+            padding: 12px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .info-chip {
+            background: rgba(255, 255, 255, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 14px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.88rem;
+            font-weight: 700;
+        }
+
+        .info-chip svg {
+            width: 16px;
+            height: 16px;
+            stroke: #bf3e77;
+            stroke-width: 2;
+            fill: none;
+            flex-shrink: 0;
+        }
+
+        .quote-box {
+            margin-top: 24px;
+            border-radius: var(--radius-xl);
+            background: linear-gradient(130deg, #fff6fb, #ffe7f2);
+            border: 1px solid #ffd6e8;
+            box-shadow: var(--shadow);
+            padding: 18px;
+        }
+
+        .quote-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 14px;
+            margin-top: 12px;
+        }
+
+        .quote-list {
+            display: grid;
+            gap: 8px;
+        }
+
+        .quote-item {
+            background: #fff;
+            border: 1px solid #ffd9ea;
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quote-item label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            color: #66495a;
+            cursor: pointer;
+        }
+
+        .quote-item input[type="checkbox"] {
+            accent-color: #df4f89;
+        }
+
+        .quote-item small {
+            color: var(--text-soft);
+            font-weight: 700;
+        }
+
+        .quote-summary {
+            background: rgba(255, 255, 255, 0.75);
+            border: 1px solid #ffd4e7;
+            border-radius: var(--radius-lg);
+            padding: 14px;
+            display: grid;
+            gap: 8px;
+            align-content: start;
+        }
+
+        .quote-total {
+            font-size: 1.8rem;
+            color: #d44982;
+            font-weight: 800;
+            transition: transform 0.2s ease;
+        }
+
+        .quote-total.bump {
+            transform: scale(1.08);
+        }
+
+        .quote-note {
+            color: var(--text-soft);
+            font-size: 0.9rem;
+        }
+
+        .promo-stack {
+            margin: 24px 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .promo-card {
+            border-radius: var(--radius-xl);
+            padding: 18px;
+            box-shadow: var(--shadow);
+            border: 1px solid #ffd6e8;
+            background: linear-gradient(135deg, #fff4fa, #ffdcea);
+        }
+
+        .promo-card h3 {
+            margin-bottom: 6px;
+        }
+
+        .promo-card p {
+            color: var(--text-soft);
+            margin-bottom: 12px;
+        }
+
+        .promo-slot {
+            min-height: 120px;
+        }
+
+        .inspiration {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .inspiration .img-slot {
+            min-height: 180px;
+        }
+
+        .footer-cta {
+            margin-top: 24px;
+            border-radius: var(--radius-xl);
+            background: linear-gradient(120deg, rgba(255, 196, 221, 0.75), rgba(255, 220, 234, 0.75));
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .footer-cta p {
+            color: #6f5d76;
+            max-width: 520px;
+        }
+
+        .faq {
+            margin-top: 22px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .faq-item {
+            border-radius: var(--radius-lg);
+            background: #fff7fb;
+            border: 1px solid #ffd8e9;
+            padding: 14px;
+        }
+
+        .faq-item h4 {
+            margin-bottom: 6px;
+        }
+
+        .faq-item p {
+            color: var(--text-soft);
+            font-size: 0.92rem;
+        }
+
+        .urgency-panel {
+            margin-top: 24px;
+            border-radius: var(--radius-xl);
+            border: 1px solid #ffd2e5;
+            background: linear-gradient(130deg, #ffe3f0, #ffd2e5 45%, #ffdff0);
+            box-shadow: var(--shadow);
+            padding: 18px;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .urgency-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .urgency-badges span {
+            background: rgba(255, 255, 255, 0.68);
+            border-radius: 999px;
+            padding: 4px 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #7a4660;
+        }
+
+        .countdown-box {
+            background: rgba(255, 255, 255, 0.65);
+            border: 1px solid #ffc8dd;
+            border-radius: var(--radius-lg);
+            padding: 14px;
+            text-align: center;
+        }
+
+        .countdown-label {
+            font-size: 0.85rem;
+            color: #87566f;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .countdown-time {
+            font-size: clamp(1.4rem, 3.4vw, 2rem);
+            font-weight: 800;
+            color: #d44c84;
+            letter-spacing: 0.04em;
+            animation: softPulse 1.9s ease-in-out infinite;
+        }
+
+        .before-after {
+            margin-top: 24px;
+        }
+
+        .before-after-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .ba-card {
+            border-radius: var(--radius-lg);
+            border: 1px solid #ffd8e9;
+            background: #fff;
+            box-shadow: var(--shadow);
+            padding: 12px;
+        }
+
+        .ba-images {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .ba-slot {
+            min-height: 130px;
+            border-radius: 14px;
+            border: 2px dashed rgba(160, 92, 130, 0.28);
+            background: linear-gradient(145deg, #fff8fc, #ffeef7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #7a5b6c;
+            font-weight: 700;
+            padding: 8px;
+        }
+
+        .wa-float {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            z-index: 30;
+            text-decoration: none;
+            color: #fff;
+            background: linear-gradient(135deg, #25d366, #18b955);
+            border-radius: 999px;
+            padding: 12px 16px;
+            font-weight: 800;
+            box-shadow: 0 10px 24px rgba(24, 185, 85, 0.38);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s ease;
+        }
+
+        .wa-float:hover {
+            transform: translateY(-2px);
+        }
+
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(24px) scale(0.98);
+            filter: blur(2px);
+            transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1), filter 0.65s ease;
+            transition-delay: var(--reveal-delay, 0ms);
+        }
+
+        .scroll-reveal.is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes reveal {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes softPulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.72;
+            }
+        }
+
+        @media (max-width: 940px) {
+            .hero {
+                grid-template-columns: 1fr;
+            }
+
+            .info-strip {
+                grid-template-columns: 1fr;
+            }
+
+            .promo-stack,
+            .faq,
+            .quote-grid,
+            .before-after-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .urgency-panel {
+                grid-template-columns: 1fr;
+            }
+
+            .inspiration {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 620px) {
+            .page-shell {
+                padding: 16px 12px 30px;
+            }
+
+            .topbar,
+            .hero-main,
+            .hero-gallery,
+            .footer-cta {
+                border-radius: 20px;
+            }
+
+            .hero-main {
+                padding: 22px 18px;
+            }
+
+            .inspiration {
+                grid-template-columns: 1fr;
+            }
+
+            .promo-stack,
+            .faq,
+            .quote-grid,
+            .before-after-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .wa-float {
+                right: 12px;
+                bottom: 12px;
+                padding: 11px 14px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .scroll-reveal,
+            .scroll-reveal.is-visible {
+                opacity: 1;
+                transform: none;
+                filter: none;
+                transition: none;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="{% static 'aurora_studio_app/css/overrides.css' %}">
 </head>
 <body>
-    <h1>Aurora Studio</h1>
-    <a href="{% url 'reserva' %}">Hacer Reserva</a>
-    
-    <h2>Servicios Disponibles</h2>
-    {% if servicios %}
-        <ul>
-        {% for servicio in servicios %}
-            <li>{{ servicio.nombre }} - ${{ servicio.precio }} ({{ servicio.duracion }}h)</li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>No hay servicios.</p>
-    {% endif %}
+    <div class="page-shell">
+        <header class="topbar">
+            <div class="brand">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 3c1.8 2.7 4.5 4.2 7.5 4.5-1 5.8-4 9.6-7.5 13-3.5-3.4-6.5-7.2-7.5-13C7.5 7.2 10.2 5.7 12 3Z"></path>
+                    </svg>
+                </span>
+                <span>Aurora Studio</span>
+            </div>
+            <a class="btn btn-soft" href="{% url 'reserva' %}">Reservar ahora</a>
+        </header>
+
+        <div class="info-strip">
+            <div class="info-chip">
+                <svg viewBox="0 0 24 24"><path d="M12 6v6l4 2"></path><circle cx="12" cy="12" r="9"></circle></svg>
+                Agenda por cita y atencion con tiempo
+            </div>
+            <div class="info-chip">
+                <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"></path></svg>
+                Precios claros desde el inicio
+            </div>
+            <div class="info-chip">
+                <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.6-7 10-7 10Z"></path></svg>
+                Cuidado personalizado en cada visita
+            </div>
+        </div>
+
+        <section class="hero">
+            <article class="hero-main">
+                <p class="kicker">Beauty • Self Care • Style Lab</p>
+                <h1>Un espacio rosa, cercano y profesional para consentirte</h1>
+                <p class="hero-copy">
+                    Somos un emprendimiento en crecimiento con enfoque en calidad, detalle y atención cálida.
+                    Aquí puedes conocer nuestros servicios, estimar costos y luego decidir si deseas reservar.
+                </p>
+                <div class="cta-row">
+                    <a class="btn btn-primary" href="{% url 'reserva' %}">Agendar cita</a>
+                    <a class="btn btn-soft" href="#cotizador">Cotizar primero</a>
+                </div>
+            </article>
+
+            <aside class="hero-gallery">
+                <div class="img-slot large">Espacio para imagen principal (banner o producto estrella)</div>
+                <div class="img-slot">Espacio para foto de servicio</div>
+                <div class="img-slot">Espacio para foto de resultado</div>
+            </aside>
+        </section>
+
+        <section id="servicios">
+            <h2 class="section-title">Servicios disponibles</h2>
+            <p class="section-sub">Estos son los servicios que tenemos activos actualmente.</p>
+
+            {% if servicios %}
+                <div class="services-grid">
+                    {% for servicio in servicios %}
+                        <article class="service-card" style="animation-delay: {{ forloop.counter0 }}00ms;">
+                            <h3>{{ servicio.nombre }}</h3>
+                            <div class="service-meta">
+                                <span class="pill">${{ servicio.precio }}</span>
+                                <span class="pill">{{ servicio.duracion }}h</span>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="service-card">
+                    <p>Aún no hay servicios cargados. Puedes comenzar agregando tus paquetes más vendidos.</p>
+                </div>
+            {% endif %}
+        </section>
+
+        <section id="cotizador" class="quote-box">
+            <h2 class="section-title">Cotización rápida (sin reservar)</h2>
+            <p class="section-sub">Selecciona los servicios que te interesan y mira un estimado de costo y tiempo.</p>
+            <div class="quote-grid">
+                <div class="quote-list">
+                    {% if servicios %}
+                        {% for servicio in servicios %}
+                            <div class="quote-item">
+                                <label>
+                                    <input class="quote-service" type="checkbox" data-precio="{{ servicio.precio }}" data-duracion="{{ servicio.duracion }}">
+                                    <span>{{ servicio.nombre }}</span>
+                                </label>
+                                <small>${{ servicio.precio }} | {{ servicio.duracion }}h</small>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="quote-item">
+                            <small>No hay servicios para cotizar todavía.</small>
+                        </div>
+                    {% endif %}
+                </div>
+                <aside class="quote-summary">
+                    <strong>Total estimado</strong>
+                    <p id="quote-total" class="quote-total">$0</p>
+                    <p>Tiempo estimado: <strong id="quote-hours">0h</strong></p>
+                    <p>Servicios seleccionados: <strong id="quote-count">0</strong></p>
+                    <p class="quote-note">Este valor es informativo y puede variar según evaluación final.</p>
+                    <a class="btn btn-primary" href="{% url 'reserva' %}">Continuar a reserva</a>
+                </aside>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">Galería inspiracional</h2>
+            <p class="section-sub">Bloques listos para subir imágenes de productos, sets o trabajos.</p>
+            <div class="inspiration">
+                <div class="img-slot">Producto destacado #1</div>
+                <div class="img-slot">Antes y después</div>
+                <div class="img-slot">Kit recomendado</div>
+            </div>
+        </section>
+
+        <section class="promo-stack">
+            <article class="promo-card">
+                <h3>Promo de temporada</h3>
+                <p>Ejemplo de texto real: Combo de manos + diseño sencillo por precio especial esta semana.</p>
+                <div class="img-slot promo-slot">Espacio para imagen de promoción</div>
+            </article>
+            <article class="promo-card">
+                <h3>Producto bestseller</h3>
+                <p>Puedes mostrar aquí el producto que más recomiendas para cuidado en casa.</p>
+                <div class="img-slot promo-slot">Espacio para imagen de producto</div>
+            </article>
+        </section>
+
+        <section class="urgency-panel">
+            <article>
+                <h3>Cupos de hoy: <span id="daily-spots">5</span></h3>
+                <p>Manejamos agenda corta para atender con calma. Si te interesa un horario, te sugerimos reservar pronto.</p>
+                <div class="urgency-badges">
+                    <span>Atención personalizada</span>
+                    <span>Cupos limitados</span>
+                    <span>Promos de inicio</span>
+                </div>
+            </article>
+            <article class="countdown-box">
+                <p class="countdown-label">La promo termina en:</p>
+                <p id="promo-countdown" class="countdown-time">00:00:00</p>
+            </article>
+        </section>
+
+        <section class="before-after">
+            <h2 class="section-title">Transformaciones Antes y Después</h2>
+            <p class="section-sub">Ideal para emprendimientos: muestra resultados reales y gana confianza al instante.</p>
+            <div class="before-after-grid">
+                <article class="ba-card">
+                    <h4>Diseño de uñas</h4>
+                    <div class="ba-images">
+                        <div class="ba-slot">ANTES<br>coloca foto aquí</div>
+                        <div class="ba-slot">DESPUÉS<br>coloca foto aquí</div>
+                    </div>
+                </article>
+                <article class="ba-card">
+                    <h4>Lifting de pestañas</h4>
+                    <div class="ba-images">
+                        <div class="ba-slot">ANTES<br>coloca foto aquí</div>
+                        <div class="ba-slot">DESPUÉS<br>coloca foto aquí</div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">Preguntas frecuentes</h2>
+            <div class="faq">
+                <article class="faq-item">
+                    <h4>¿Cuánto dura una cita?</h4>
+                    <p>Depende del servicio, normalmente entre 1h y 2h.</p>
+                </article>
+                <article class="faq-item">
+                    <h4>¿Puedo reagendar?</h4>
+                    <p>Sí, con anticipación puedes mover tu cita sin problema.</p>
+                </article>
+                <article class="faq-item">
+                    <h4>¿La cotización me obliga a reservar?</h4>
+                    <p>No. Puedes cotizar libremente y reservar solo si te conviene.</p>
+                </article>
+                <article class="faq-item">
+                    <h4>¿Cómo confirmo mi cita?</h4>
+                    <p>Luego de llenar la reserva, te escribimos para confirmar el detalle final.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="footer-cta">
+            <div>
+                <h3>Convierte visitas en reservas con una vista que vende por ti</h3>
+                <p>
+                    Estamos construyendo este espacio paso a paso para que conozcas servicios, cotices fácil y reserves cuando estés lista.
+                </p>
+            </div>
+            <a class="btn btn-primary" href="{% url 'reserva' %}">Quiero reservar</a>
+        </section>
+    </div>
+
+    <a class="wa-float" href="https://wa.me/573001112233?text=Hola%20Aurora%20Studio%2C%20quiero%20reservar" target="_blank" rel="noopener noreferrer">
+        WhatsApp
+    </a>
+
+    <script>
+        // Countdown simple hasta medianoche para mostrar urgencia diaria.
+        function updateCountdown() {
+            const now = new Date();
+            const midnight = new Date(now);
+            midnight.setHours(24, 0, 0, 0);
+            const diff = midnight - now;
+
+            const hours = Math.floor(diff / 3600000);
+            const minutes = Math.floor((diff % 3600000) / 60000);
+            const seconds = Math.floor((diff % 60000) / 1000);
+
+            const text = String(hours).padStart(2, "0") + ":" + String(minutes).padStart(2, "0") + ":" + String(seconds).padStart(2, "0");
+            const countdownNode = document.getElementById("promo-countdown");
+            if (countdownNode) {
+                countdownNode.textContent = text;
+            }
+        }
+
+        function updateSpots() {
+            const hours = new Date().getHours();
+            const spots = Math.max(2, 8 - Math.floor(hours / 3));
+            const spotsNode = document.getElementById("daily-spots");
+            if (spotsNode) {
+                spotsNode.textContent = String(spots);
+            }
+        }
+
+        function updateQuote() {
+            const services = document.querySelectorAll(".quote-service:checked");
+            let total = 0;
+            let hours = 0;
+
+            services.forEach((service) => {
+                total += Number(service.dataset.precio || 0);
+                hours += Number(service.dataset.duracion || 0);
+            });
+
+            const totalNode = document.getElementById("quote-total");
+            const hoursNode = document.getElementById("quote-hours");
+            const countNode = document.getElementById("quote-count");
+
+            if (totalNode) {
+                totalNode.textContent = "$" + total.toFixed(2);
+                totalNode.classList.remove("bump");
+                void totalNode.offsetWidth;
+                totalNode.classList.add("bump");
+            }
+            if (hoursNode) {
+                hoursNode.textContent = hours.toFixed(1).replace(".0", "") + "h";
+            }
+            if (countNode) {
+                countNode.textContent = String(services.length);
+            }
+        }
+
+        document.querySelectorAll(".quote-service").forEach((service) => {
+            service.addEventListener("change", updateQuote);
+        });
+
+        function initScrollReveal() {
+            const targets = document.querySelectorAll(
+                ".topbar, .info-strip, .hero, #servicios, #cotizador, .inspiration, .promo-stack, .urgency-panel, .before-after, .faq, .footer-cta"
+            );
+
+            targets.forEach((target, index) => {
+                target.classList.add("scroll-reveal");
+                target.style.setProperty("--reveal-delay", (index % 4) * 80 + "ms");
+            });
+
+            const observer = new IntersectionObserver(
+                (entries, obs) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add("is-visible");
+                            obs.unobserve(entry.target);
+                        }
+                    });
+                },
+                { threshold: 0.15, rootMargin: "0px 0px -40px 0px" }
+            );
+
+            targets.forEach((target) => observer.observe(target));
+        }
+
+        updateCountdown();
+        updateSpots();
+        updateQuote();
+        initScrollReveal();
+        setInterval(updateCountdown, 1000);
+    </script>
 </body>
 </html>

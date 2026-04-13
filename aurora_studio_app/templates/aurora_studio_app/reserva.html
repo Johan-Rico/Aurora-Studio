@@ -1,53 +1,483 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Hacer Reserva</title>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hacer Reserva | Aurora Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #fff2f8;
+            --surface: #ffffff;
+            --surface-soft: #ffeef7;
+            --text-main: #4f3646;
+            --text-soft: #7e6372;
+            --accent: #ec6ea1;
+            --accent-2: #ffc9df;
+            --peach: #ffd6e8;
+            --line: #ffd5e7;
+            --radius-xl: 24px;
+            --radius-lg: 16px;
+            --shadow: 0 15px 34px rgba(173, 92, 133, 0.18);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Nunito", sans-serif;
+            color: var(--text-main);
+            background:
+                radial-gradient(circle at 85% 10%, rgba(255, 178, 211, 0.58), transparent 34%),
+                radial-gradient(circle at 7% 20%, rgba(255, 215, 233, 0.6), transparent 30%),
+                linear-gradient(150deg, var(--bg), #fff7fb 45%, #ffeef8);
+            min-height: 100vh;
+            padding: 24px 16px;
+        }
+
+        .shell {
+            max-width: 1120px;
+            margin: 0 auto;
+        }
+
+        .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .link-back {
+            text-decoration: none;
+            color: var(--text-main);
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            padding: 9px 14px;
+            font-weight: 700;
+        }
+
+        h1 {
+            font-family: "Playfair Display", serif;
+            font-size: clamp(1.9rem, 3vw, 2.6rem);
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 16px;
+        }
+
+        .notice {
+            margin-bottom: 14px;
+            border-radius: var(--radius-xl);
+            border: 1px solid #ffd5e7;
+            background: linear-gradient(120deg, #ffd8ea, #ffc3dd 48%, #ffd9ec);
+            color: #6b3651;
+            padding: 10px;
+            box-shadow: var(--shadow);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .notice-chip {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.75);
+            border-radius: 12px;
+            padding: 9px 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.84rem;
+            font-weight: 700;
+        }
+
+        .notice-chip svg {
+            width: 15px;
+            height: 15px;
+            stroke: #bf3e77;
+            stroke-width: 2;
+            fill: none;
+            flex-shrink: 0;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow);
+        }
+
+        .form-card {
+            padding: 24px;
+        }
+
+        .helper-card {
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .section {
+            margin-bottom: 18px;
+        }
+
+        .section h3 {
+            margin-bottom: 10px;
+            font-size: 1.06rem;
+            color: #5f5268;
+        }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .field {
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-soft);
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        input,
+        select {
+            width: 100%;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: #fff;
+            padding: 11px 12px;
+            font: inherit;
+            color: var(--text-main);
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #efb4c8;
+            box-shadow: 0 0 0 4px rgba(238, 145, 178, 0.18);
+        }
+
+        .services-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 9px;
+        }
+
+        .service-option {
+            background: var(--surface-soft);
+            border: 1px solid #ffd8e9;
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.92rem;
+        }
+
+        .service-option input {
+            width: auto;
+            accent-color: #df4f89;
+        }
+
+        .submit-btn {
+            border: none;
+            border-radius: 999px;
+            background: linear-gradient(140deg, var(--accent), #f27aac);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.98rem;
+            padding: 12px 20px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(236, 110, 161, 0.34);
+        }
+
+        .message {
+            margin-top: 12px;
+            background: linear-gradient(130deg, rgba(255, 215, 233, 0.65), rgba(255, 188, 218, 0.45));
+            border: 1px solid #ffd1e6;
+            color: #6a3f54;
+            border-radius: 12px;
+            padding: 10px 12px;
+            font-weight: 700;
+        }
+
+        .visual-slot {
+            border-radius: var(--radius-lg);
+            border: 2px dashed rgba(160, 92, 130, 0.28);
+            min-height: 150px;
+            background: linear-gradient(140deg, #fff, #fff0f7);
+            display: flex;
+            align-items: flex-end;
+            padding: 12px;
+            color: #805b70;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .tips {
+            background: linear-gradient(120deg, rgba(255, 205, 228, 0.6), rgba(255, 231, 242, 0.7));
+            border: 1px solid #ffd5e7;
+            border-radius: var(--radius-lg);
+            padding: 14px;
+            color: #685d70;
+        }
+
+        .tips p {
+            margin-top: 6px;
+            font-size: 0.93rem;
+        }
+
+        .micro-faq {
+            border-radius: var(--radius-lg);
+            border: 1px solid #ffd8e9;
+            background: #fff8fc;
+            padding: 12px;
+        }
+
+        .micro-faq h4 {
+            margin-bottom: 8px;
+        }
+
+        .micro-faq p {
+            color: var(--text-soft);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .wa-float {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            z-index: 30;
+            text-decoration: none;
+            color: #fff;
+            background: linear-gradient(135deg, #25d366, #18b955);
+            border-radius: 999px;
+            padding: 12px 16px;
+            font-weight: 800;
+            box-shadow: 0 10px 24px rgba(24, 185, 85, 0.38);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s ease;
+        }
+
+        .wa-float:hover {
+            transform: translateY(-2px);
+        }
+
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(22px) scale(0.985);
+            filter: blur(2px);
+            transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), filter 0.6s ease;
+            transition-delay: var(--reveal-delay, 0ms);
+        }
+
+        .scroll-reveal.is-visible {
+            opacity: 1;
+            transform: none;
+            filter: none;
+        }
+
+        @media (max-width: 940px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .notice {
+                grid-template-columns: 1fr;
+            }
+
+            .helper-card {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .field-row {
+                grid-template-columns: 1fr;
+            }
+
+            .form-card,
+            .helper-card {
+                padding: 16px;
+            }
+
+            .wa-float {
+                right: 12px;
+                bottom: 12px;
+                padding: 11px 14px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .scroll-reveal,
+            .scroll-reveal.is-visible {
+                opacity: 1;
+                transform: none;
+                filter: none;
+                transition: none;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="{% static 'aurora_studio_app/css/overrides.css' %}">
 </head>
 <body>
-    <h1>Hacer Reserva</h1>
-    <a href="{% url 'home' %}">Volver</a>
-    
-    <form method="post">
-        {% csrf_token %}
-        
-        <h3>Datos del Cliente</h3>
-        <input type="text" name="nombre" placeholder="Nombre" required><br>
-        <input type="email" name="email" placeholder="Email" required><br>
-        <input type="tel" name="telefono" placeholder="Teléfono" required><br>
-        
-        <h3>Fecha y Hora</h3>
-        <input type="date" name="fecha" required><br>
-        <select name="hora_inicio" required>
-            <option value="">Seleccionar hora</option>
-            <option value="08:00">08:00</option>
-            <option value="09:00">09:00</option>
-            <option value="10:00">10:00</option>
-            <option value="11:00">11:00</option>
-            <option value="12:00">12:00</option>
-            <option value="13:00">13:00</option>
-            <option value="14:00">14:00</option>
-            <option value="15:00">15:00</option>
-            <option value="16:00">16:00</option>
-            <option value="17:00">17:00</option>
-            <option value="18:00">18:00</option>
-            <option value="19:00">19:00</option>
-            <option value="20:00">20:00</option>
-        </select><br>
-        
-        <h3>Servicios</h3>
-        {% for servicio in servicios %}
-            <label>
-                <input type="checkbox" name="servicios" value="{{ servicio.id }}">
-                {{ servicio.nombre }} - ${{ servicio.precio }}
-            </label><br>
-        {% endfor %}
-        
-        <br>
-        <button type="submit">Crear Reserva</button>
-    </form>
-    
-    {% if mensaje %}
-        <p><strong>{{ mensaje }}</strong></p>
-    {% endif %}
+    <div class="shell">
+        <div class="notice">
+            <div class="notice-chip">
+                <svg viewBox="0 0 24 24"><path d="M12 6v6l4 2"></path><circle cx="12" cy="12" r="9"></circle></svg>
+                Reserva rapida y confirmacion por mensaje
+            </div>
+            <div class="notice-chip">
+                <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"></path></svg>
+                Emprendimiento local en crecimiento
+            </div>
+            <div class="notice-chip">
+                <svg viewBox="0 0 24 24"><path d="M4 12h16"></path><path d="M12 4v16"></path></svg>
+                Atencion organizada por cita
+            </div>
+        </div>
+
+        <div class="top">
+            <h1>Hacer Reserva</h1>
+            <a class="link-back" href="{% url 'home' %}">Volver al inicio</a>
+        </div>
+
+        <div class="layout">
+            <form class="card form-card" method="post">
+                {% csrf_token %}
+
+                <section class="section">
+                    <h3>Datos del cliente</h3>
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="nombre">Nombre</label>
+                            <input id="nombre" type="text" name="nombre" placeholder="Tu nombre" required>
+                        </div>
+                        <div class="field">
+                            <label for="telefono">Teléfono</label>
+                            <input id="telefono" type="tel" name="telefono" placeholder="Tu teléfono" required>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="email">Email</label>
+                        <input id="email" type="email" name="email" placeholder="correo@ejemplo.com" required>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h3>Fecha y hora</h3>
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="fecha">Fecha</label>
+                            <input id="fecha" type="date" name="fecha" required>
+                        </div>
+                        <div class="field">
+                            <label for="hora_inicio">Hora</label>
+                            <select id="hora_inicio" name="hora_inicio" required>
+                                <option value="">Seleccionar hora</option>
+                                <option value="08:00">08:00</option>
+                                <option value="09:00">09:00</option>
+                                <option value="10:00">10:00</option>
+                                <option value="11:00">11:00</option>
+                                <option value="12:00">12:00</option>
+                                <option value="13:00">13:00</option>
+                                <option value="14:00">14:00</option>
+                                <option value="15:00">15:00</option>
+                                <option value="16:00">16:00</option>
+                                <option value="17:00">17:00</option>
+                                <option value="18:00">18:00</option>
+                                <option value="19:00">19:00</option>
+                                <option value="20:00">20:00</option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h3>Servicios</h3>
+                    <div class="services-list">
+                        {% for servicio in servicios %}
+                            <label class="service-option">
+                                <input type="checkbox" name="servicios" value="{{ servicio.id }}">
+                                <span>{{ servicio.nombre }} - ${{ servicio.precio }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                </section>
+
+                <button class="submit-btn" type="submit">Crear Reserva</button>
+
+                {% if mensaje %}
+                    <p class="message">{{ mensaje }}</p>
+                {% endif %}
+            </form>
+
+            <aside class="card helper-card">
+                <div class="tips">
+                    <strong>Información útil</strong>
+                    <p>Tu cita queda pendiente hasta confirmar disponibilidad del horario seleccionado.</p>
+                </div>
+                <div class="visual-slot">Espacio para imagen de promoción</div>
+                <div class="visual-slot">Espacio para imagen de producto recomendado</div>
+                <div class="visual-slot">Espacio para testimonios o resultados</div>
+                <div class="micro-faq">
+                    <h4>¿Dudas rápidas?</h4>
+                    <p>Si tienes preguntas antes de reservar, escríbenos por WhatsApp.</p>
+                    <p>Aquí puedes mostrar políticas de cancelación, tiempos y recomendaciones previas.</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <a class="wa-float" href="https://wa.me/573001112233?text=Hola%20Aurora%20Studio%2C%20quiero%20agendar%20mi%20reserva" target="_blank" rel="noopener noreferrer">
+        WhatsApp
+    </a>
+
+    <script>
+        function initScrollReveal() {
+            const targets = document.querySelectorAll(".notice, .top, .layout > form, .layout > aside");
+
+            targets.forEach((target, index) => {
+                target.classList.add("scroll-reveal");
+                target.style.setProperty("--reveal-delay", index * 90 + "ms");
+            });
+
+            const observer = new IntersectionObserver(
+                (entries, obs) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add("is-visible");
+                            obs.unobserve(entry.target);
+                        }
+                    });
+                },
+                { threshold: 0.2, rootMargin: "0px 0px -35px 0px" }
+            );
+
+            targets.forEach((target) => observer.observe(target));
+        }
+
+        initScrollReveal();
+    </script>
 </body>
 </html>

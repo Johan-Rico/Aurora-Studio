@@ -1,0 +1,58 @@
+/*
+ * Ajustes de layout y responsive compartidos.
+ * Este archivo permite separar estilos de la plantilla HTML.
+ */
+
+#cotizador .quote-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 12px;
+}
+
+#cotizador .quote-item label {
+    min-width: 0;
+}
+
+#cotizador .quote-item small {
+    display: inline-block;
+    min-width: 120px;
+    text-align: right;
+    white-space: nowrap;
+    justify-self: end;
+}
+
+#cotizador .quote-summary {
+    align-content: start;
+}
+
+#cotizador .quote-total {
+    display: block;
+    width: 100%;
+    text-align: center !important;
+    margin: 0 auto !important;
+}
+
+/* Mejor legibilidad en tablets */
+@media (max-width: 900px) {
+    #cotizador .quote-item {
+        grid-template-columns: 1fr;
+        row-gap: 8px;
+    }
+
+    #cotizador .quote-item small {
+        min-width: 0;
+        text-align: left;
+        justify-self: start;
+    }
+}
+
+/* Ajustes finos para moviles */
+@media (max-width: 620px) {
+    .quote-summary,
+    .quote-item,
+    .info-chip,
+    .notice-chip {
+        border-radius: 12px;
+    }
+}
