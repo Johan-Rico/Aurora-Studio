@@ -4,24 +4,24 @@
     {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hacer Reserva | Aurora Studio</title>
+    <title>Hacer Reserva | aurora</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #fff2f8;
+            --bg: #f3ebff;
             --surface: #ffffff;
-            --surface-soft: #ffeef7;
-            --text-main: #4f3646;
-            --text-soft: #7e6372;
-            --accent: #ec6ea1;
-            --accent-2: #ffc9df;
-            --peach: #ffd6e8;
-            --line: #ffd5e7;
+            --surface-soft: #f4edff;
+            --text-main: #2f3056;
+            --text-soft: #5a5f8b;
+            --accent: #b865ff;
+            --accent-2: #7f93ff;
+            --peach: #f3c8ff;
+            --line: #d7dcff;
             --radius-xl: 24px;
             --radius-lg: 16px;
-            --shadow: 0 15px 34px rgba(173, 92, 133, 0.18);
+            --shadow: 0 15px 34px rgba(91, 97, 182, 0.2);
         }
 
         * {
@@ -34,9 +34,9 @@
             font-family: "Nunito", sans-serif;
             color: var(--text-main);
             background:
-                radial-gradient(circle at 85% 10%, rgba(255, 178, 211, 0.58), transparent 34%),
-                radial-gradient(circle at 7% 20%, rgba(255, 215, 233, 0.6), transparent 30%),
-                linear-gradient(150deg, var(--bg), #fff7fb 45%, #ffeef8);
+                radial-gradient(circle at 85% 10%, rgba(255, 126, 214, 0.4), transparent 34%),
+                radial-gradient(circle at 7% 20%, rgba(184, 101, 255, 0.35), transparent 30%),
+                linear-gradient(150deg, var(--bg), #f7f2ff 45%, #eaf1ff);
             min-height: 100vh;
             padding: 24px 16px;
         }
@@ -78,9 +78,9 @@
         .notice {
             margin-bottom: 14px;
             border-radius: var(--radius-xl);
-            border: 1px solid #ffd5e7;
-            background: linear-gradient(120deg, #ffd8ea, #ffc3dd 48%, #ffd9ec);
-            color: #6b3651;
+            border: 1px solid #d6dcff;
+            background: linear-gradient(120deg, rgba(255, 138, 222, 0.75), rgba(185, 108, 255, 0.72) 48%, rgba(111, 143, 255, 0.72));
+            color: #2f3363;
             padding: 10px;
             box-shadow: var(--shadow);
             display: grid;
@@ -103,7 +103,7 @@
         .notice-chip svg {
             width: 15px;
             height: 15px;
-            stroke: #bf3e77;
+            stroke: #5d63c7;
             stroke-width: 2;
             fill: none;
             flex-shrink: 0;
@@ -169,8 +169,8 @@
         input:focus,
         select:focus {
             outline: none;
-            border-color: #efb4c8;
-            box-shadow: 0 0 0 4px rgba(238, 145, 178, 0.18);
+            border-color: #9aa8ff;
+            box-shadow: 0 0 0 4px rgba(127, 147, 255, 0.2);
         }
 
         .services-list {
@@ -192,26 +192,26 @@
 
         .service-option input {
             width: auto;
-            accent-color: #df4f89;
+            accent-color: #6f8fff;
         }
 
         .submit-btn {
             border: none;
             border-radius: 999px;
-            background: linear-gradient(140deg, var(--accent), #f27aac);
+            background: linear-gradient(140deg, var(--accent), var(--accent-2));
             color: #fff;
             font-weight: 700;
             font-size: 0.98rem;
             padding: 12px 20px;
             cursor: pointer;
-            box-shadow: 0 10px 20px rgba(236, 110, 161, 0.34);
+            box-shadow: 0 10px 20px rgba(95, 110, 221, 0.34);
         }
 
         .message {
             margin-top: 12px;
-            background: linear-gradient(130deg, rgba(255, 215, 233, 0.65), rgba(255, 188, 218, 0.45));
-            border: 1px solid #ffd1e6;
-            color: #6a3f54;
+            background: linear-gradient(130deg, rgba(243, 224, 255, 0.75), rgba(225, 235, 255, 0.65));
+            border: 1px solid #d8deff;
+            color: #39407a;
             border-radius: 12px;
             padding: 10px 12px;
             font-weight: 700;
@@ -231,11 +231,11 @@
         }
 
         .tips {
-            background: linear-gradient(120deg, rgba(255, 205, 228, 0.6), rgba(255, 231, 242, 0.7));
-            border: 1px solid #ffd5e7;
+            background: linear-gradient(120deg, rgba(255, 196, 241, 0.58), rgba(226, 234, 255, 0.72));
+            border: 1px solid #d7dcff;
             border-radius: var(--radius-lg);
             padding: 14px;
-            color: #685d70;
+            color: #4b5084;
         }
 
         .tips p {
@@ -449,7 +449,7 @@
         </div>
     </div>
 
-    <a class="wa-float" href="https://wa.me/573001112233?text=Hola%20Aurora%20Studio%2C%20quiero%20agendar%20mi%20reserva" target="_blank" rel="noopener noreferrer">
+    <a class="wa-float" href="https://wa.me/573001112233?text=Hola%20aurora%2C%20quiero%20agendar%20mi%20reserva" target="_blank" rel="noopener noreferrer">
         WhatsApp
     </a>
 

@@ -4,24 +4,24 @@
     {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aurora Studio</title>
+    <title>aurora</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-main: #fff4f9;
-            --bg-soft: #ffeef7;
+            --bg-main: #f3ebff;
+            --bg-soft: #e8f1ff;
             --card: #ffffff;
-            --peach: #ffd4e4;
-            --rose: #ffb7d2;
-            --rose-strong: #f77dad;
-            --rose-glow: #ffdeec;
-            --text-main: #4f3444;
-            --text-soft: #7f6071;
-            --accent: #ef6ea2;
-            --accent-dark: #d95a8f;
-            --shadow: 0 14px 35px rgba(169, 88, 130, 0.2);
+            --peach: #f8c8ff;
+            --rose: #d89bff;
+            --rose-strong: #6f8fff;
+            --rose-glow: #e8dbff;
+            --text-main: #2f3056;
+            --text-soft: #5a5f8b;
+            --accent: #b865ff;
+            --accent-dark: #5f8eff;
+            --shadow: 0 14px 35px rgba(91, 97, 182, 0.22);
             --radius-xl: 26px;
             --radius-lg: 18px;
         }
@@ -36,10 +36,10 @@
             font-family: "Nunito", sans-serif;
             color: var(--text-main);
             background:
-                radial-gradient(circle at 8% 12%, rgba(255, 183, 210, 0.7), transparent 30%),
-                radial-gradient(circle at 88% 5%, rgba(255, 210, 231, 0.85), transparent 31%),
-                radial-gradient(circle at 78% 82%, rgba(255, 154, 194, 0.45), transparent 35%),
-                linear-gradient(140deg, var(--bg-main), #fff7fb 40%, var(--bg-soft));
+                radial-gradient(circle at 10% 10%, rgba(184, 101, 255, 0.42), transparent 33%),
+                radial-gradient(circle at 88% 8%, rgba(255, 126, 214, 0.42), transparent 34%),
+                radial-gradient(circle at 78% 84%, rgba(111, 143, 255, 0.34), transparent 36%),
+                linear-gradient(140deg, var(--bg-main), #f7f3ff 40%, var(--bg-soft));
             min-height: 100vh;
             line-height: 1.5;
         }
@@ -87,11 +87,11 @@
             width: 38px;
             height: 38px;
             border-radius: 12px;
-            background: linear-gradient(150deg, #ff9cc5, #ffd4e8);
+            background: linear-gradient(150deg, #ff7fd6, #6f8fff);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 8px 18px rgba(239, 110, 162, 0.35);
+            box-shadow: 0 8px 18px rgba(90, 112, 221, 0.35);
         }
 
         .brand-mark svg {
@@ -279,8 +279,8 @@
         .info-strip {
             margin: 0 0 18px;
             border-radius: var(--radius-xl);
-            background: linear-gradient(100deg, #ffd9ea, #ffc0dc 45%, #ffd3e6);
-            color: #6f3551;
+            background: linear-gradient(100deg, rgba(255, 138, 222, 0.75), rgba(185, 108, 255, 0.72) 45%, rgba(111, 143, 255, 0.72));
+            color: #2e3260;
             box-shadow: var(--shadow);
             padding: 12px;
             display: grid;
@@ -303,7 +303,7 @@
         .info-chip svg {
             width: 16px;
             height: 16px;
-            stroke: #bf3e77;
+            stroke: #5d63c7;
             stroke-width: 2;
             fill: none;
             flex-shrink: 0;
@@ -312,8 +312,8 @@
         .quote-box {
             margin-top: 24px;
             border-radius: var(--radius-xl);
-            background: linear-gradient(130deg, #fff6fb, #ffe7f2);
-            border: 1px solid #ffd6e8;
+            background: linear-gradient(130deg, #f8f4ff, #eef3ff);
+            border: 1px solid #d9ddff;
             box-shadow: var(--shadow);
             padding: 18px;
         }
@@ -396,8 +396,8 @@
             border-radius: var(--radius-xl);
             padding: 18px;
             box-shadow: var(--shadow);
-            border: 1px solid #ffd6e8;
-            background: linear-gradient(135deg, #fff4fa, #ffdcea);
+            border: 1px solid #d9ddff;
+            background: linear-gradient(135deg, #f8f1ff, #eaf1ff);
         }
 
         .promo-card h3 {
@@ -426,7 +426,7 @@
         .footer-cta {
             margin-top: 24px;
             border-radius: var(--radius-xl);
-            background: linear-gradient(120deg, rgba(255, 196, 221, 0.75), rgba(255, 220, 234, 0.75));
+            background: linear-gradient(120deg, rgba(255, 142, 221, 0.5), rgba(111, 143, 255, 0.45));
             border: 1px solid rgba(255, 255, 255, 0.9);
             padding: 24px;
             box-shadow: var(--shadow);
@@ -468,8 +468,8 @@
         .urgency-panel {
             margin-top: 24px;
             border-radius: var(--radius-xl);
-            border: 1px solid #ffd2e5;
-            background: linear-gradient(130deg, #ffe3f0, #ffd2e5 45%, #ffdff0);
+            border: 1px solid #d5dbff;
+            background: linear-gradient(130deg, #f7eeff, #eadfff 45%, #eaf1ff);
             box-shadow: var(--shadow);
             padding: 18px;
             display: grid;
@@ -512,7 +512,7 @@
         .countdown-time {
             font-size: clamp(1.4rem, 3.4vw, 2rem);
             font-weight: 800;
-            color: #d44c84;
+            color: #5f6fdd;
             letter-spacing: 0.04em;
             animation: softPulse 1.9s ease-in-out infinite;
         }
@@ -713,7 +713,7 @@
                         <path d="M12 3c1.8 2.7 4.5 4.2 7.5 4.5-1 5.8-4 9.6-7.5 13-3.5-3.4-6.5-7.2-7.5-13C7.5 7.2 10.2 5.7 12 3Z"></path>
                     </svg>
                 </span>
-                <span>Aurora Studio</span>
+                <span>aurora</span>
             </div>
             <a class="btn btn-soft" href="{% url 'reserva' %}">Reservar ahora</a>
         </header>
@@ -736,7 +736,7 @@
         <section class="hero">
             <article class="hero-main">
                 <p class="kicker">Beauty • Self Care • Style Lab</p>
-                <h1>Un espacio rosa, cercano y profesional para consentirte</h1>
+                <h1>Un espacio magico, cercano y profesional para consentirte</h1>
                 <p class="hero-copy">
                     Somos un emprendimiento en crecimiento con enfoque en calidad, detalle y atención cálida.
                     Aquí puedes conocer nuestros servicios, estimar costos y luego decidir si deseas reservar.
@@ -902,7 +902,7 @@
         </section>
     </div>
 
-    <a class="wa-float" href="https://wa.me/573001112233?text=Hola%20Aurora%20Studio%2C%20quiero%20reservar" target="_blank" rel="noopener noreferrer">
+    <a class="wa-float" href="https://wa.me/573001112233?text=Hola%20aurora%2C%20quiero%20reservar" target="_blank" rel="noopener noreferrer">
         WhatsApp
     </a>
 
