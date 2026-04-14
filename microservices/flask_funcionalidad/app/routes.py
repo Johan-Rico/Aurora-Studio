@@ -2,6 +2,9 @@ from __future__ import annotations
 
 from datetime import date, time
 from decimal import Decimal, InvalidOperation
+from email.message import EmailMessage
+import os
+import smtplib
 
 from flask import Blueprint, jsonify, request
 
@@ -10,11 +13,25 @@ funcionalidad_bp = Blueprint("funcionalidad", __name__)
 
 
 class ApiError(ValueError):
-	def __init__(self, detail: str, status_code: int = 400, errors: dict | None = None):
+	def __init__(
+		self,
+		detail: str,
+		status_code: int = 400,
+		errors: dict | None = None,
+		code: str = "BAD_REQUEST",
+	):
 		super().__init__(detail)
 		self.detail = detail
 		self.status_code = status_code
 		self.errors = errors or {}
+		self.code = code
+
+
+def _env_bool(name: str, default: bool = False) -> bool:
+	value = os.getenv(name)
+	if value is None:
+		return default
+	return value.strip().lower() in {"1", "true", "yes", "on"}
 
 
 def _parse_date(value: str) -> date:
@@ -52,6 +69,79 @@ def _build_message(payload: dict) -> str:
 	)
 
 
+def _send_email_via_smtp(*, destinatario: str, asunto: str, mensaje: str) -> None:
+	modo = os.getenv("NOTIFICATION_SENDER", "MOCK").strip().upper()
+	if modo == "MOCK":
+		print(
+			"\n".join(
+				[
+					"[flask_funcionalidad][MOCK] email generado",
+					f"to={destinatario}",
+					f"subject={asunto}",
+					mensaje,
+				]
+			)
+		)
+		return
+
+	if modo != "SMTP":
+		raise ApiError(
+			"NOTIFICATION_SENDER debe ser MOCK o SMTP",
+			status_code=500,
+			code="MISCONFIGURED_NOTIFICATION_MODE",
+		)
+
+	host = os.getenv("SMTP_HOST", "").strip()
+	port_raw = os.getenv("SMTP_PORT", "").strip()
+	from_email = os.getenv("SMTP_FROM_EMAIL", "").strip()
+	user = os.getenv("SMTP_USER", "").strip()
+	password = os.getenv("SMTP_PASSWORD", "")
+	use_tls = _env_bool("SMTP_USE_TLS", default=True)
+	use_ssl = _env_bool("SMTP_USE_SSL", default=False)
+
+	if not host or not port_raw or not from_email:
+		raise ApiError(
+			"Faltan variables SMTP_HOST, SMTP_PORT o SMTP_FROM_EMAIL",
+			status_code=500,
+			code="SMTP_CONFIGURATION_ERROR",
+		)
+
+	try:
+		port = int(port_raw)
+	except ValueError as exc:
+		raise ApiError(
+			"SMTP_PORT debe ser un entero válido",
+			status_code=500,
+			code="SMTP_CONFIGURATION_ERROR",
+		) from exc
+
+	email = EmailMessage()
+	email["Subject"] = asunto
+	email["From"] = from_email
+	email["To"] = destinatario
+	email.set_content(mensaje)
+
+	try:
+		if use_ssl:
+			with smtplib.SMTP_SSL(host, port, timeout=20) as server:
+				if user:
+					server.login(user, password)
+				server.send_message(email)
+		else:
+			with smtplib.SMTP(host, port, timeout=20) as server:
+				if use_tls:
+					server.starttls()
+				if user:
+					server.login(user, password)
+				server.send_message(email)
+	except Exception as exc:
+		raise ApiError(
+			"No se pudo enviar el correo de notificación",
+			status_code=500,
+			code="NOTIFICATION_DELIVERY_FAILED",
+		) from exc
+
+
 @funcionalidad_bp.get("/health")
 def health() -> tuple[dict, int]:
 	return jsonify(status="ok", service="flask_funcionalidad"), 200
@@ -61,7 +151,7 @@ def health() -> tuple[dict, int]:
 def handle_api_error(exc: ApiError):
 	payload = {
 		"error": {
-			"code": "BAD_REQUEST",
+			"code": exc.code,
 			"detail": exc.detail,
 		},
 	}
@@ -90,7 +180,12 @@ def enviar_notificacion_reserva() -> tuple[dict, int]:
 	errores = {}
 
 	for campo in campos_requeridos:
-		if campo not in payload or payload[campo] in {None, "", []}:
+		valor = payload.get(campo)
+		if valor is None:
+			errores[campo] = "Este campo es requerido"
+		elif isinstance(valor, str) and not valor.strip():
+			errores[campo] = "Este campo es requerido"
+		elif isinstance(valor, list) and not valor:
 			errores[campo] = "Este campo es requerido"
 
 	if errores:
@@ -112,16 +207,24 @@ def enviar_notificacion_reserva() -> tuple[dict, int]:
 		raise
 
 	message = _build_message(payload)
-	print(
-		"\n".join(
-			[
-				"[flask_funcionalidad] notificacion recibida",
-				f"canal={canal}",
-				f"destinatario={payload['destinatario']}",
-				message,
-			]
+	asunto = f"Confirmacion de reserva aurora ({payload['codigo_reserva']})"
+
+	if canal == "email":
+		_send_email_via_smtp(
+			destinatario=payload["destinatario"],
+			asunto=asunto,
+			mensaje=message,
 		)
-	)
+	else:
+		print(
+			"\n".join(
+				[
+					"[flask_funcionalidad][MOCK] notificacion whatsapp",
+					f"destinatario={payload['destinatario']}",
+					message,
+				]
+			)
+		)
 
 	return (
 		jsonify(

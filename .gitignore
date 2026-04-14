@@ -1,0 +1,12 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Local environments
+.venv/
+.env
+.env.*
+!.env.example
+
+# Flask microservice local env
+microservices/flask_funcionalidad/.env

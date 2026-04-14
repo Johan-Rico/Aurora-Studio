@@ -1,6 +1,11 @@
 import os
+from dotenv import load_dotenv
 
 from app import create_app
+
+
+# Load environment variables from .env and override inherited shell values.
+load_dotenv(override=True)
 
 
 app = create_app()

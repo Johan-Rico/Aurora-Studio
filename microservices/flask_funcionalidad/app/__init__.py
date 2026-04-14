@@ -17,7 +17,7 @@ def create_app(config: dict | None = None) -> Flask:
 	def handle_api_error(exc: ApiError):
 		payload = {
 			"error": {
-				"code": "BAD_REQUEST",
+				"code": exc.code,
 				"detail": exc.detail,
 			},
 		}

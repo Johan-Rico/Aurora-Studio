@@ -1,0 +1,65 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: aurora-db
+    environment:
+      POSTGRES_DB: aurora_db
+      POSTGRES_USER: aurora_user
+      POSTGRES_PASSWORD: aurora_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aurora_user -d aurora_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aurora-django
+    environment:
+      DJANGO_DEBUG: "1"
+      DJANGO_ALLOWED_HOSTS: "*"
+      USE_POSTGRES: "1"
+      POSTGRES_DB: aurora_db
+      POSTGRES_USER: aurora_user
+      POSTGRES_PASSWORD: aurora_password
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      NOTIFICATION_SENDER: mock
+    command: sh -c "python manage.py migrate && gunicorn aurora_studio.wsgi:application --bind 0.0.0.0:8000 --workers 3"
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+  flask:
+    build:
+      context: ./microservices/flask_funcionalidad
+      dockerfile: Dockerfile
+    container_name: aurora-flask
+    env_file:
+      - ./microservices/flask_funcionalidad/.env
+    ports:
+      - "5001:5001"
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: aurora-nginx
+    depends_on:
+      - django
+      - flask
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+
+volumes:
+  postgres_data:
