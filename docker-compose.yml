@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   db:
     image: postgres:16-alpine
@@ -32,7 +30,8 @@ services:
       POSTGRES_PASSWORD: aurora_password
       POSTGRES_HOST: db
       POSTGRES_PORT: "5432"
-      NOTIFICATION_SENDER: mock
+      NOTIFICATION_SENDER: flask
+      NOTIFICATIONS_SERVICE_URL: http://flask:5001/api/v2/funcionalidad
     command: sh -c "python manage.py migrate && gunicorn aurora_studio.wsgi:application --bind 0.0.0.0:8000 --workers 3"
     depends_on:
       db:

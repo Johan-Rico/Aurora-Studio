@@ -5,7 +5,7 @@ from django.conf import settings
 
 from aurora_studio_app.domain.interfaces import EnviadorNotificacion
 from aurora_studio_app.infra.servicios import (
-	EnviadorNotificacionEmail,
+	EnviadorNotificacionFlask,
 	EnviadorNotificacionMock,
 )
 
@@ -22,11 +22,11 @@ class FactoriaNotificacion:
 		
 		tipo = tipo.lower()
 		
-		if tipo == "email":
-			return EnviadorNotificacionEmail()
+		if tipo in {"flask", "http", "email"}:
+			return EnviadorNotificacionFlask()
 		elif tipo == "mock":
 			return EnviadorNotificacionMock()
 		else:
 			raise ValueError(
-				f"Tipo de notificación '{tipo}' no válido. Use 'email' o 'mock'."
+				f"Tipo de notificación '{tipo}' no válido. Use 'flask' o 'mock'."
 			)
