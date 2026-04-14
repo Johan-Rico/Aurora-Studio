@@ -1,0 +1,23 @@
+# VCS
+.git/
+.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# Local envs and editor
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+.vscode/
+
+# Runtime artifacts
+*.sqlite3
+staticfiles/

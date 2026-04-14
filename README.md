@@ -1,166 +1,206 @@
-# Sistema de Gestión de Reservas - Aurora
+# Sistema de Gestion de Reservas - Aurora
 
-Sistema web de gestión de citas y reservas desarrollado para Aurora, negocio de servicios de belleza. Implementa arquitectura limpia con separación por capas y cumplimiento de principios SOLID.
+Aplicacion web para gestion de servicios y reservas. El proyecto usa un monolito Django y un microservicio Flask para la funcionalidad estrangulada, con Nginx como gateway.
 
-## Descripción del Proyecto
+## Arquitectura Actual
 
-Aplicación Django que permite la gestión completa de reservas para un estudio de belleza. Incluye validación de disponibilidad, gestión de clientes, servicios, y notificaciones. Provee tanto interfaz web como API REST para integración con otros sistemas.
+- Django: web + API v1 + logica de negocio principal
+- Flask: API v2 de funcionalidad estrangulada (notificaciones)
+- Nginx: punto unico de entrada y enrutamiento
+- SQLite: base de datos local y tambien en entorno Docker
 
-## Funcionalidades Principales
+## Estructura de Proyecto
 
-- Gestión de servicios con precio y duración configurable
-- Sistema de reservas con validación de horarios y disponibilidad
-- Generación de código único por reserva para seguimiento
-- Notificaciones automáticas por email (configurable mock/real)
-- Cancelación de reservas mediante email + código
-- API REST completa para integración externa
-- Configuración de horarios de atención por día de la semana
-
-## Tecnologías y Arquitectura
-
-### Stack Tecnológico
-- Django 5.2.11
-- Django REST Framework
-- Python 3.x
-- SQLite (desarrollo)
-
-### Arquitectura
-- **Domain-Driven Design (DDD)**: Separación por capas (Domain, Application, Infrastructure, Presentation)
-- **SOLID Principles**: Aplicados en todo el código
-- **Repository Pattern**: Abstracción de acceso a datos
-- **Builder Pattern**: Construcción compleja de objetos (Reserva)
-- **Factory Pattern**: Creación dinámica de servicios según configuración
-
-## Estructura del Proyecto
-
-```
-aurora_studio/
-├── aurora_studio/          # Configuración Django
-│   ├── settings.py         # Configuración general
-│   └── urls.py             # URLs principales
-│
-├── aurora_studio_app/      # Aplicación principal
-│   ├── models.py           # Modelos de datos
-│   ├── views.py            # Vistas web (HTML)
-│   ├── urls.py             # URLs de la app
-│   │
-│   ├── domain/             # Capa de dominio
-│   │   ├── interfaces.py   # Interfaces abstractas
-│   │   └── builders.py     # Constructores de objetos
-│   │
-│   ├── infra/              # Capa de infraestructura
-│   │   ├── repositories.py # Implementaciones de repositorios
-│   │   ├── servicios.py    # Servicios externos (email, UUID)
-│   │   └── factories.py    # Fábricas de objetos
-│   │
-│   ├── api/                # API REST
-│   │   ├── views.py        # Endpoints API
-│   │   ├── serializers.py  # Serializadores JSON
-│   │   └── urls.py         # URLs API
-│   │
-│   ├── services.py         # Capa de aplicación (lógica de negocio)
-│   └── templates/          # Plantillas HTML
-│
-└── db.sqlite3              # Base de datos
+```text
+Aurora-Studio/
+│   └── nginx.conf                      # Reglas de ruteo v1/v2
+├── docker-compose.yml                  # Orquestacion de servicios
+├── Dockerfile                          # Imagen Django
+├── requirements.txt                    # Dependencias Django para Docker
+└── manage.py
 ```
 
-## Instalación y Configuración
+## Endpoints Principales
 
-### Prerrequisitos
-- Python 3.8+
+### Web (Django)
 
-### Pasos de Instalación
+- `/`
+- `/reserva/`
 
-1. Clonar el repositorio
+### API v1 (Django)
+
+- `GET /api/servicios/`
+- `POST /api/reservas/`
+- `GET /api/disponibilidad/?fecha=YYYY-MM-DD`
+- `POST /api/reservas/cancel/`
+
+### API v2 Estrangulada (Flask)
+
+- `GET /api/v2/funcionalidad/health`
+- `POST /api/v2/funcionalidad/notificaciones/reserva`
+
+## Enrutamiento por Nginx
+
+- `/api/v1/*` -> Django (`/api/*`)
+- `/api/v2/funcionalidad/*` -> Flask
+- `/` y demas -> Django
+
+## Ejecutar Sin Docker (Modo Local Rapido)
+
+### Requisitos
+
+- Python 3.11+
+
+### Pasos
+
+1. Instalar dependencias basicas:
+
 ```bash
-git clone https://github.com/tuusuario/Aurora-Studio.git
-cd Aurora-Studio
+pip install django==5.2.11 djangorestframework
 ```
 
-2. Instalar dependencias
-```bash
-pip install django==5.2.11
-pip install djangorestframework
-```
+1. Migrar base de datos:
 
-3. Aplicar migraciones
 ```bash
 python manage.py migrate
 ```
 
-4. Iniciar servidor
+1. Levantar servidor:
+
 ```bash
 python manage.py runserver
 ```
 
-## Configuración
+## Ejecutar Con Docker (Recomendado para Entrega)
 
-### Notificaciones
-Por defecto, las notificaciones se imprimen en consola (modo desarrollo):
+### Requisitos Docker
+
+- Docker Desktop encendido
+- Docker Compose plugin disponible (`docker compose`)
+
+### Configurar variables de entorno (Flask)
+
+Antes de levantar los contenedores, crea el archivo `.env` del microservicio Flask a partir del ejemplo:
+
 ```bash
-$env:NOTIFICATION_SENDER="MOCK"   # Windows PowerShell
-NOTIFICATION_SENDER=MOCK # Linux/Mac
+cp microservices/flask_funcionalidad/.env.example microservices/flask_funcionalidad/.env
 ```
 
-## Uso del Sistema
+En Windows PowerShell puedes usar:
 
-### Interfaz Web
-- `/` - Listado de servicios disponibles
-- `/reserva/` - Formulario de creación de reserva
-
-### API REST
-
-#### Listar Servicios
-```http
-GET /api/servicios/
+```powershell
+Copy-Item microservices/flask_funcionalidad/.env.example microservices/flask_funcionalidad/.env
 ```
 
-#### Crear Reserva
-```http
-POST /api/reservas/
-Content-Type: application/json
+Luego edita `microservices/flask_funcionalidad/.env` con tus valores (especialmente SMTP si quieres envio real de correos).
 
-{
-  "nombre": "María García",
-  "email": "maria@example.com",
-  "telefono": "+1234567890",
-  "fecha": "2026-03-18",
-  "hora": "10:00",
-  "servicios_ids": [1, 3]
-}
+### Levantar todo
+
+```bash
+docker compose up --build -d
 ```
 
-#### Consultar Disponibilidad
-```http
-GET /api/disponibilidad/?fecha=2026-03-18
+El contenedor Django usa el archivo `db.sqlite3` del proyecto para conservar los datos existentes.
+
+### Ver estado
+
+```bash
+docker compose ps
 ```
 
-#### Cancelar Reserva
-```http
-POST /api/reservas/cancel/
-Content-Type: application/json
+### Ver logs
 
-{
-  "email": "maria@example.com",
-  "codigo": "A3F7B2C9"
-}
+```bash
+docker compose logs -f
 ```
 
-## Modelos de Datos
+### Bajar servicios
 
-- **Usuario**: Usuarios base del sistema
-- **Cliente**: Clientes que realizan reservas (hereda de Usuario)
-- **Servicio**: Servicios ofrecidos con precio y duración
-- **Reserva**: Citas o bloqueos administrativos
-- **DetalleCita**: Relación muchos-a-muchos entre Reserva y Servicio
-- **Disponibilidad**: Horarios de atención por día de la semana
+```bash
+docker compose down
+```
 
-## Arquitectura en Capas
+### Bajar servicios y limpiar estado
 
-El proyecto implementa Domain-Driven Design con 4 capas bien definidas:
+```bash
+docker compose down --remove-orphans
+```
 
-1. **Domain** (`domain/`): Lógica de negocio pura, interfaces abstractas, sin dependencias externas
-2. **Application** (`services.py`): Orquestación de casos de uso, lógica de aplicación
-3. **Infrastructure** (`infra/`): Implementaciones concretas (repositorios Django ORM, email, UUID)
-4. **Presentation** (`views.py`, `api/`): Vistas web y endpoints REST
+## Variables de Entorno Clave
+
+### Django
+
+- `USE_POSTGRES=0` para usar SQLite
+- `DJANGO_DEBUG=1`
+- `DJANGO_ALLOWED_HOSTS=*`
+- `NOTIFICATION_SENDER=flask`
+- `NOTIFICATIONS_SERVICE_URL=http://flask:5001/api/v2/funcionalidad`
+
+### Flask
+
+- `NOTIFICATION_SENDER=MOCK|SMTP`
+- `SMTP_HOST`
+- `SMTP_PORT`
+- `SMTP_USER`
+- `SMTP_PASSWORD`
+- `SMTP_FROM_EMAIL`
+- `SMTP_USE_TLS`
+- `SMTP_USE_SSL`
+
+## Verificacion Rapida
+
+1. Salud del microservicio por gateway:
+
+```bash
+curl http://localhost:8080/api/v2/funcionalidad/health
+```
+
+1. Servicios API v1 por gateway:
+
+```bash
+curl http://localhost:8080/api/v1/servicios/
+```
+
+Si necesitas volver a cargar datos manualmente en Docker:
+
+```bash
+docker compose exec django python manage.py migrate
+```
+
+1. Web principal:
+
+```text
+http://localhost:8080/
+```
+
+## Problemas Comunes y Soluciones
+
+### 1) `docker` no se reconoce en terminal
+
+- Cierra y abre VS Code despues de instalar Docker Desktop.
+- Si persiste, agrega manualmente al PATH:
+
+`C:\Program Files\Docker\Docker\resources\bin`
+
+### 2) `docker-credential-desktop` no encontrado
+
+- Es el mismo problema de PATH. Ver punto anterior.
+
+### 3) Microservicio Flask no envía correo
+
+- Valida `NOTIFICATION_SENDER=SMTP`
+- Usa App Password del proveedor (no password normal)
+- Revisa logs con `docker compose logs -f flask`
+
+## Estado de Migracion Strangler
+
+- Monolito Django permanece para el core (reservas, disponibilidad, clientes)
+- Funcionalidad estrangulada en Flask expuesta como API v2
+- Nginx centraliza rutas y permite coexistencia de frameworks
+
+## Notas de Seguridad
+
+- Nunca subir credenciales reales al repositorio
+- Mantener archivos `.env` fuera de Git
+- Rotar cualquier credencial usada durante pruebas
 
