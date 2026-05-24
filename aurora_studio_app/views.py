@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from datetime import datetime
+from django.utils.translation import gettext_lazy as _
 
 from .infra.repositories import (
     RepositorioServicioDjango,
@@ -26,8 +27,8 @@ class HomeView(View):
         servicios = servicio_service.listar_servicios_activos()
         
         context = {
-            'titulo': 'Bienvenido a Aurora Studio',
-            'descripcion': 'Tu belleza, nuestra pasión',
+            'titulo': _('Bienvenido a Aurora Studio'),
+            'descripcion': _('Tu belleza, nuestra pasión'),
             'servicios': servicios,
         }
         
@@ -109,5 +110,5 @@ class ReservaView(View):
             
             return render(request, self.template_name, {
                 'servicios': servicios,
-                'mensaje': f'Error: {str(e)}'
+                'mensaje': _('Error: ') + str(e),
             })
