@@ -15,7 +15,7 @@ services:
       NOTIFICATIONS_ASYNC: ${NOTIFICATIONS_ASYNC:-1}
       CELERY_BROKER_URL: ${CELERY_BROKER_URL:-redis://redis:6379/0}
       CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND:-redis://redis:6379/0}
-    command: sh -c "python manage.py migrate && gunicorn aurora_studio.wsgi:application --bind 0.0.0.0:8000 --workers 3"
+    command: sh -c "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn aurora_studio.wsgi:application --bind 0.0.0.0:8000 --workers 3"
     volumes:
       - ./db.sqlite3:/app/db.sqlite3
     ports:
@@ -50,6 +50,7 @@ services:
       - "${NGINX_HOST_PORT:-8080}:80"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./staticfiles:/usr/share/nginx/html/static:ro
     restart: unless-stopped
 
   redis:
