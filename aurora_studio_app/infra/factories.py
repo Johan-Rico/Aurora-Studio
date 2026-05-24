@@ -23,7 +23,7 @@ class FactoriaNotificacion:
 		
 		tipo = tipo.lower()
 		
-		if tipo in {"flask", "http", "email"}:
+		if tipo in {"smtp", "email", "correo"}:
 			# Si la configuración indica envío asíncrono, devolver el enviador Celery
 			if getattr(settings, 'NOTIFICATIONS_ASYNC', False):
 				return EnviadorNotificacionCelery()
@@ -32,5 +32,5 @@ class FactoriaNotificacion:
 			return EnviadorNotificacionMock()
 		else:
 			raise ValueError(
-				f"Tipo de notificación '{tipo}' no válido. Use 'flask' o 'mock'."
+				f"Tipo de notificación '{tipo}' no válido. Use 'smtp' o 'mock'."
 			)

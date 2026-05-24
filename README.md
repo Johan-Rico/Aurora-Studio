@@ -108,7 +108,7 @@ Copy-Item microservices/flask_funcionalidad/.env.example microservices/flask_fun
 
 Luego edita `microservices/flask_funcionalidad/.env` con tus valores (especialmente SMTP si quieres envio real de correos).
 
-Si no vas a usar SMTP todavía, deja `NOTIFICATION_SENDER=MOCK`. Para AWS/producción, usa `SMTP` y completa las credenciales.
+Si no vas a usar SMTP todavía, deja `NOTIFICATION_SENDER=mock`. Para AWS/producción, usa `smtp` y completa las credenciales.
 
 ### Levantar todo
 
@@ -224,12 +224,12 @@ Si estás en Linux, haz una prueba manual con `curl` al endpoint de health y al 
 - `USE_POSTGRES=0` para usar SQLite
 - `DJANGO_DEBUG=1`
 - `DJANGO_ALLOWED_HOSTS=*`
-- `NOTIFICATION_SENDER=flask`
+- `NOTIFICATION_SENDER=mock|smtp`
 - `NOTIFICATIONS_SERVICE_URL=http://flask:5001/api/v2/funcionalidad`
 
 ### Flask
 
-- `NOTIFICATION_SENDER=MOCK|SMTP`
+- `NOTIFICATION_SENDER=mock|smtp`
 - `SMTP_HOST`
 - `SMTP_PORT`
 - `SMTP_USER`

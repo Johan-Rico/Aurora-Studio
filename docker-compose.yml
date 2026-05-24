@@ -10,7 +10,7 @@ services:
       DJANGO_CSRF_TRUSTED_ORIGINS: ${DJANGO_CSRF_TRUSTED_ORIGINS:-http://localhost:8080}
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-change-me-in-production}
       USE_POSTGRES: ${USE_POSTGRES:-0}
-      NOTIFICATION_SENDER: ${NOTIFICATION_SENDER:-flask}
+      NOTIFICATION_SENDER: ${NOTIFICATION_SENDER:-mock}
       NOTIFICATIONS_SERVICE_URL: ${NOTIFICATIONS_SERVICE_URL:-http://flask:5001/api/v2/funcionalidad}
       NOTIFICATIONS_ASYNC: ${NOTIFICATIONS_ASYNC:-1}
       CELERY_BROKER_URL: ${CELERY_BROKER_URL:-redis://redis:6379/0}
@@ -28,7 +28,7 @@ services:
       dockerfile: Dockerfile
     container_name: aurora-flask
     environment:
-      NOTIFICATION_SENDER: ${NOTIFICATION_SENDER:-MOCK}
+      NOTIFICATION_SENDER: ${NOTIFICATION_SENDER:-mock}
       SMTP_HOST: ${SMTP_HOST:-smtp.gmail.com}
       SMTP_PORT: ${SMTP_PORT:-587}
       SMTP_USER: ${SMTP_USER:-}
@@ -71,7 +71,7 @@ services:
       DJANGO_DEBUG: ${DJANGO_DEBUG:-0}
       CELERY_BROKER_URL: ${CELERY_BROKER_URL:-redis://redis:6379/0}
       CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND:-redis://redis:6379/0}
-      NOTIFICATION_SENDER: ${NOTIFICATION_SENDER:-flask}
+      NOTIFICATION_SENDER: ${NOTIFICATION_SENDER:-mock}
       NOTIFICATIONS_SERVICE_URL: ${NOTIFICATIONS_SERVICE_URL:-http://flask:5001/api/v2/funcionalidad}
     command: sh -c "celery -A aurora_studio worker --loglevel=info"
     restart: unless-stopped

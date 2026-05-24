@@ -10,7 +10,7 @@ from aurora_studio_app.infra.servicios import EnviadorNotificacionFlask
 
 
 class FactoriaNotificacionTestCase(TestCase):
-	@override_settings(NOTIFICATION_SENDER="flask")
+	@override_settings(NOTIFICATION_SENDER="smtp")
 	def test_default_factory_returns_flask_sender(self) -> None:
 		enviador = FactoriaNotificacion.crear_enviador()
 		self.assertIsInstance(enviador, EnviadorNotificacionFlask)

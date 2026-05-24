@@ -151,8 +151,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ========== CONFIGURACIÓN DE AURORA STUDIO ==========
 
 # Sistema de notificaciones
-# Opciones: 'mock' (imprime en consola) o 'flask' (delegado al microservicio)
-NOTIFICATION_SENDER = os.environ.get('NOTIFICATION_SENDER', 'flask').lower()
+# Opciones visibles: 'mock' (imprime en consola) o 'smtp' (envía por el microservicio Flask)
+NOTIFICATION_SENDER = os.environ.get('NOTIFICATION_SENDER', 'mock').lower()
 NOTIFICATIONS_SERVICE_URL = os.environ.get(
     'NOTIFICATIONS_SERVICE_URL',
     'http://localhost:5001/api/v2/funcionalidad',
