@@ -739,15 +739,15 @@
 
         <section class="hero">
             <article class="hero-main">
-                <p class="kicker">Elegancia • Cuidado • Estilo</p>
-                <h1>Un espacio magico, cercano y profesional para consentirte</h1>
+                <p class="kicker">{% trans "Elegancia • Cuidado • Estilo" %}</p>
+                <h1>{% trans "Un espacio magico, cercano y profesional para consentirte" %}</h1>
                 <p class="hero-copy">
-                    Somos un emprendimiento en crecimiento con enfoque en calidad, detalle y atención cálida.
-                    Aquí puedes conocer nuestros servicios, estimar costos y luego decidir si deseas reservar.
+                    {% trans "Somos un emprendimiento en crecimiento con enfoque en calidad, detalle y atención cálida." %}
+                    {% trans "Aquí puedes conocer nuestros servicios, estimar costos y luego decidir si deseas reservar." %}
                 </p>
                 <div class="cta-row">
-                    <a class="btn btn-primary" href="{% url 'reserva' %}">Agendar cita</a>
-                    <a class="btn btn-soft" href="#cotizador">Cotizar primero</a>
+                    <a class="btn btn-primary" href="{% url 'reserva' %}">{% trans "Agendar cita" %}</a>
+                    <a class="btn btn-soft" href="#cotizador">{% trans "Cotizar primero" %}</a>
                 </div>
             </article>
 
@@ -759,8 +759,8 @@
         </section>
 
         <section id="servicios">
-            <h2 class="section-title">Servicios disponibles</h2>
-            <p class="section-sub">Estos son los servicios que tenemos activos actualmente.</p>
+            <h2 class="section-title">{% trans "Servicios disponibles" %}</h2>
+            <p class="section-sub">{% trans "Estos son los servicios que tenemos activos actualmente." %}</p>
 
             {% if servicios %}
                 <div class="services-grid">
@@ -776,14 +776,14 @@
                 </div>
             {% else %}
                 <div class="service-card">
-                    <p>Aún no hay servicios cargados. Puedes comenzar agregando tus paquetes más vendidos.</p>
+                    <p>{% trans "Aún no hay servicios cargados. Puedes comenzar agregando tus paquetes más vendidos." %}</p>
                 </div>
             {% endif %}
         </section>
 
         <section id="cotizador" class="quote-box">
-            <h2 class="section-title">Cotización rápida (sin reservar)</h2>
-            <p class="section-sub">Selecciona los servicios que te interesan y mira un estimado de costo y tiempo.</p>
+            <h2 class="section-title">{% trans "Cotización rápida (sin reservar)" %}</h2>
+            <p class="section-sub">{% trans "Selecciona los servicios que te interesan y mira un estimado de costo y tiempo." %}</p>
             <div class="quote-grid">
                 <div class="quote-list">
                     {% if servicios %}
@@ -803,12 +803,12 @@
                     {% endif %}
                 </div>
                 <aside class="quote-summary">
-                    <strong>Total estimado</strong>
+                    <strong>{% trans "Total estimado" %}</strong>
                     <p id="quote-total" class="quote-total">$0</p>
-                    <p>Tiempo estimado: <strong id="quote-hours">0h</strong></p>
-                    <p>Servicios seleccionados: <strong id="quote-count">0</strong></p>
-                    <p class="quote-note">Este valor es informativo y puede variar según evaluación final.</p>
-                    <a class="btn btn-primary" href="{% url 'reserva' %}">Continuar a reserva</a>
+                    <p>{% trans "Tiempo estimado:" %} <strong id="quote-hours">0h</strong></p>
+                    <p>{% trans "Servicios seleccionados:" %} <strong id="quote-count">0</strong></p>
+                    <p class="quote-note">{% trans "Este valor es informativo y puede variar según evaluación final." %}</p>
+                    <a class="btn btn-primary" href="{% url 'reserva' %}">{% trans "Continuar a reserva" %}</a>
                 </aside>
             </div>
         </section>
