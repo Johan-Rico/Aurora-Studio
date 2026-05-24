@@ -8,6 +8,7 @@ from aurora_studio_app.infra.servicios import (
 	EnviadorNotificacionFlask,
 	EnviadorNotificacionMock,
     EnviadorNotificacionCelery,
+    EnviadorNotificacionTercero,
 )
 
 
@@ -30,6 +31,8 @@ class FactoriaNotificacion:
 			return EnviadorNotificacionFlask()
 		elif tipo == "mock":
 			return EnviadorNotificacionMock()
+		elif tipo in {"tercero", "third", "third_party"}:
+			return EnviadorNotificacionTercero()
 		else:
 			raise ValueError(
 				f"Tipo de notificación '{tipo}' no válido. Use 'smtp' o 'mock'."

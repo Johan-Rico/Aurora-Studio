@@ -12,6 +12,64 @@ from django.conf import settings
 from aurora_studio_app.domain.interfaces import EnviadorNotificacion, GeneradorCodigoReserva
 
 
+class EnviadorNotificacionTercero(EnviadorNotificacion):
+	"""Adaptador para enviar notificaciones a un proveedor externo (tercero).
+
+	Usa `NOTIFICATIONS_THIRD_PARTY_URL` desde `settings` si está presente; si no,
+	intenta derivar una URL destino a partir de `NOTIFICATIONS_SERVICE_URL`.
+	"""
+
+	def __init__(self, base_url: str | None = None, timeout_seconds: float = 8.0):
+		self.base_url = (
+			base_url
+			or getattr(settings, "NOTIFICATIONS_THIRD_PARTY_URL", None)
+			or getattr(settings, "NOTIFICATIONS_SERVICE_URL", "http://localhost:5001/api/v2/funcionalidad")
+		).rstrip("/")
+		self.timeout_seconds = timeout_seconds
+
+	def enviar_confirmacion_reserva(
+		self,
+		*,
+		correo_destino: str,
+		nombre_cliente: str,
+		codigo_reserva: str,
+		fecha_reserva: date,
+		hora_inicio: time,
+		hora_fin: time,
+		nombres_servicios: list[str],
+		precio_total: Decimal,
+	) -> None:
+		# Payload simplificado que muchos proveedores entienden
+		payload = {
+			"type": "reservation.confirmation",
+			"recipient": correo_destino,
+			"client_name": nombre_cliente,
+			"reservation_code": codigo_reserva,
+			"date": fecha_reserva.isoformat(),
+			"start_time": hora_inicio.isoformat(),
+			"end_time": hora_fin.isoformat(),
+			"items": nombres_servicios,
+			"amount": str(precio_total),
+		}
+
+		solicitud = urllib_request.Request(
+			url=f"{self.base_url}/external/notifications",
+			data=json.dumps(payload).encode("utf-8"),
+			headers={"Content-Type": "application/json"},
+			method="POST",
+		)
+
+		try:
+			with urllib_request.urlopen(solicitud, timeout=self.timeout_seconds) as response:
+				if response.status not in {200, 201, 202, 204}:
+					raise RuntimeError(f"Proveedor tercero respondió con estado {response.status}")
+		except urllib_error.HTTPError as exc:
+			body = exc.read().decode("utf-8", errors="replace")
+			raise RuntimeError(f"Error HTTP del proveedor tercero: {exc.code} {body}") from exc
+		except (urllib_error.URLError, OSError) as exc:
+			raise RuntimeError("No se pudo conectar con el proveedor de notificaciones tercero") from exc
+
+
 class EnviadorNotificacionFlask(EnviadorNotificacion):
 	"""Implementación de EnviadorNotificacion que delega el envío al microservicio Flask."""
 

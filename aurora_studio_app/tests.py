@@ -67,3 +67,10 @@ class EnviadorNotificacionFlaskTestCase(TestCase):
 
 		self.assertIn("No se pudo conectar", str(context.exception))
 		self.assertTrue(mock_urlopen.called)
+
+	def test_factory_returns_third_party_adapter_when_configured(self) -> None:
+		from django.test import override_settings
+		with override_settings(NOTIFICATION_SENDER='tercero'):
+			env = FactoriaNotificacion.crear_enviador()
+			from aurora_studio_app.infra.servicios import EnviadorNotificacionTercero
+			self.assertIsInstance(env, EnviadorNotificacionTercero)
