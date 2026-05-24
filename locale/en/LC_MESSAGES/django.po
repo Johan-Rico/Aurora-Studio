@@ -1,0 +1,572 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Aurora Studio\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-24 15:07-0500\n"
+"PO-Revision-Date: 2026-05-24 00:00+0000\n"
+"Last-Translator: Copilot\n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: .\aurora_studio\settings.py:151
+msgid "Español"
+msgstr "Spanish"
+
+#: .\aurora_studio\settings.py:152
+msgid "English"
+msgstr "English"
+
+#: .\aurora_studio_app\models.py:12
+msgid "Usuarios"
+msgstr "Users"
+
+#: .\aurora_studio_app\models.py:26
+msgid "Clientes"
+msgstr "Clients"
+
+#: .\aurora_studio_app\models.py:38
+msgid "Categoría del servicio (ej: Uñas, Cejas, Pestañas, Facial)"
+msgstr "Service category (e.g. Nails, Brows, Lashes, Facial)"
+
+#: .\aurora_studio_app\models.py:45
+msgid "Duración del servicio en horas"
+msgstr "Service duration in hours"
+
+#: .\aurora_studio_app\models.py:55
+msgid "Cita"
+msgstr "Appointment"
+
+#: .\aurora_studio_app\models.py:56
+msgid "Bloqueo Administrativo"
+msgstr "Administrative block"
+
+#: .\aurora_studio_app\models.py:65
+msgid "Cliente que hace la reserva (null para bloqueos administrativos)"
+msgstr "Customer making the booking (null for administrative blocks)"
+
+#: .\aurora_studio_app\models.py:75
+msgid "Código único para que la clienta gestione su cita"
+msgstr "Unique code for the customer to manage the appointment"
+
+#: .\aurora_studio_app\models.py:81
+msgid "Reservas"
+msgstr "Bookings"
+
+#: .\aurora_studio_app\models.py:96
+msgid "Precio del servicio en el momento de la reserva"
+msgstr "Service price at the time of booking"
+
+#: .\aurora_studio_app\models.py:100
+msgid "Detalles de Citas"
+msgstr "Appointment details"
+
+#: .\aurora_studio_app\models.py:109
+msgid "Lunes"
+msgstr "Monday"
+
+#: .\aurora_studio_app\models.py:110
+msgid "Martes"
+msgstr "Tuesday"
+
+#: .\aurora_studio_app\models.py:111
+msgid "Miércoles"
+msgstr "Wednesday"
+
+#: .\aurora_studio_app\models.py:112
+msgid "Jueves"
+msgstr "Thursday"
+
+#: .\aurora_studio_app\models.py:113
+msgid "Viernes"
+msgstr "Friday"
+
+#: .\aurora_studio_app\models.py:114
+msgid "Sábado"
+msgstr "Saturday"
+
+#: .\aurora_studio_app\models.py:115
+msgid "Domingo"
+msgstr "Sunday"
+
+#: .\aurora_studio_app\models.py:124
+msgid ""
+"Lista de horas bloqueadas en formato [9, 10, 14] representando las 9:00, "
+"10:00, 14:00"
+msgstr ""
+"List of blocked hours in the format [9, 10, 14] representing 9:00, 10:00, "
+"14:00"
+
+#: .\aurora_studio_app\models.py:129
+msgid "Disponibilidades"
+msgstr "Availabilities"
+
+#: .\aurora_studio_app\services.py:55
+msgid "Todos los campos son requeridos: nombre, email, telefono"
+msgstr "All fields are required: name, email, phone"
+
+#: .\aurora_studio_app\services.py:58
+msgid "Email inválido"
+msgstr "Invalid email"
+
+#: .\aurora_studio_app\services.py:94
+msgid "No se pueden hacer reservas en fechas pasadas"
+msgstr "Bookings cannot be made for past dates"
+
+#: .\aurora_studio_app\services.py:103
+msgid "El horario solicitado está fuera del horario de atención"
+msgstr "The requested time is outside business hours"
+
+#: .\aurora_studio_app\services.py:107
+msgid "El horario seleccionado ya está ocupado"
+msgstr "The selected time slot is already booked"
+
+#: .\aurora_studio_app\services.py:119
+msgid "No se pueden consultar horarios en fechas pasadas"
+msgstr "Availability cannot be queried for past dates"
+
+#: .\aurora_studio_app\services.py:122 .\aurora_studio_app\services.py:130
+msgid "La duración debe ser mayor a cero"
+msgstr "Duration must be greater than zero"
+
+#: .\aurora_studio_app\services.py:298
+msgid "Debe seleccionar al menos un servicio"
+msgstr "You must select at least one service"
+
+#: .\aurora_studio_app\services.py:310 .\aurora_studio_app\services.py:330
+msgid "No se pueden cancelar reservas pasadas"
+msgstr "Past bookings cannot be cancelled"
+
+#: .\aurora_studio_app\services.py:319
+msgid "Email y código de reserva son requeridos"
+msgstr "Email and booking code are required"
+
+#: .\aurora_studio_app\services.py:327
+msgid "No existe una reserva con ese email y código"
+msgstr "No booking exists for that email and code"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:722
+msgid "Reservar ahora"
+msgstr "Book now"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:728
+msgid "Agenda por cita y atención con tiempo"
+msgstr "By-appointment scheduling with enough time"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:732
+msgid "Precios claros desde el inicio"
+msgstr "Clear prices from the start"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:736
+msgid "Cuidado personalizado en cada visita"
+msgstr "Personalized care on every visit"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:742
+msgid "Elegancia • Cuidado • Estilo"
+msgstr "Elegance • Care • Style"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:743
+msgid "Un espacio magico, cercano y profesional para consentirte"
+msgstr "A magical, warm, and professional space to pamper you"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:745
+msgid ""
+"Somos un emprendimiento en crecimiento con enfoque en calidad, detalle y "
+"atención cálida."
+msgstr "We are a growing business focused on quality, detail, and warm service."
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:746
+msgid ""
+"Aquí puedes conocer nuestros servicios, estimar costos y luego decidir si "
+"deseas reservar."
+msgstr "Here you can explore our services, estimate costs, and decide whether to book."
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:749
+msgid "Agendar cita"
+msgstr "Book an appointment"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:750
+msgid "Cotizar primero"
+msgstr "Quote first"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:756
+msgid "Espacio para foto de servicio"
+msgstr "Space for a service photo"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:757
+msgid "Espacio para foto de resultado"
+msgstr "Space for a result photo"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:762
+msgid "Servicios disponibles"
+msgstr "Available services"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:763
+msgid "Estos son los servicios que tenemos activos actualmente."
+msgstr "Lash lifting"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:779
+msgid "Aún no hay servicios cargados. Puedes comenzar agregando tus paquetes más vendidos."
+msgstr "There are no services loaded yet. You can start by adding your best-selling packages."
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:785
+msgid "Cotización rápida (sin reservar)"
+msgstr "Quick quote (no booking)"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:786
+msgid ""
+"Selecciona los servicios que te interesan y mira un estimado de costo y "
+"tiempo."
+msgstr "Select the services you are interested in and see an estimated cost and time."
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:801
+msgid "No hay servicios para cotizar todavía."
+msgstr "There are no services to quote yet."
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:806
+msgid "Total estimado"
+msgstr "Estimated total"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:808
+msgid "Tiempo estimado:"
+msgstr "Estimated time:"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:809
+msgid "Servicios seleccionados:"
+msgstr "Selected services:"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:810
+msgid "Este valor es informativo y puede variar según evaluación final."
+msgstr "This value is for information only and may vary after final evaluation."
+
+msgid "Continuar a reserva"
+msgstr "Continue to booking"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:817
+msgid "Galería inspiracional"
+msgstr "Inspiration gallery"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:818
+msgid "Bloques listos para subir imágenes de productos, sets o trabajos."
+msgstr "Ready-made blocks to upload product, set, or work images."
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:820
+msgid "Producto destacado #1"
+msgstr "Featured product #1"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:821
+msgid "Antes y después"
+msgstr "Before and after"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:822
+msgid "Kit recomendado"
+msgstr "Recommended kit"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:828
+msgid "Promo de temporada"
+msgstr "Seasonal promo"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:829
+msgid ""
+"Ejemplo de texto real: Combo de manos + diseño sencillo por precio especial "
+"esta semana."
+msgstr ""
+"Real text example: Hands combo + simple design at a special price this week."
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:830
+#: .\aurora_studio_app\templates\aurora_studio_app\reserva.html:440
+msgid "Espacio para imagen de promoción"
+msgstr "Space for promo image"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:833
+msgid "Producto bestseller"
+msgstr "Best-selling product"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:834
+msgid ""
+"Puedes mostrar aquí el producto que más recomiendas para cuidado en casa."
+msgstr "You can show here the product you most recommend for at-home care."
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:835
+msgid "Espacio para imagen de producto"
+msgstr "Space for product image"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:841
+msgid "Cupos de hoy:"
+msgstr "Today's slots:"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:842
+msgid ""
+"Manejamos agenda corta para atender con calma. Si te interesa un horario, te "
+"sugerimos reservar pronto."
+msgstr ""
+"We keep the schedule short so we can attend calmly. If you want a slot, we "
+"recommend booking soon."
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:844
+msgid "Atención personalizada"
+msgstr "Personalized attention"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:845
+msgid "Cupos limitados"
+msgstr "Limited slots"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:846
+msgid "Promos de inicio"
+msgstr "Launch promos"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:850
+msgid "La promo termina en:"
+msgstr "Quote first"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:856
+msgid "Transformaciones Antes y Después"
+msgstr "Before and after transformations"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:857
+msgid ""
+"Ideal para emprendimientos: muestra resultados reales y gana confianza al "
+"instante."
+msgstr ""
+"Ideal for small businesses: show real results and build trust instantly."
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:860
+msgid "Diseño de uñas"
+msgstr "Nail design"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:862
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:869
+msgid "ANTES"
+msgstr "BEFORE"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:862
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:863
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:869
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:870
+msgid "coloca foto aquí"
+msgstr "place a photo here"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:863
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:870
+msgid "DESPUÉS"
+msgstr "AFTER"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:867
+msgid "Lifting de pestañas"
+msgstr "Lash lifting"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:877
+msgid "Preguntas frecuentes"
+msgstr "Frequently asked questions"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:880
+msgid "¿Cuánto dura una cita?"
+msgstr "How long does an appointment take?"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:881
+msgid "Depende del servicio, normalmente entre 1h y 2h."
+msgstr "It depends on the service, usually between 1h and 2h."
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:884
+msgid "¿Puedo reagendar?"
+msgstr "Can I reschedule?"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:885
+msgid "Sí, con anticipación puedes mover tu cita sin problema."
+msgstr "Yes, with advance notice you can move your appointment without any problem."
+"Yes, with advance notice you can move your appointment without any problem."
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:888
+msgid "¿La cotización me obliga a reservar?"
+msgstr "Does the quote commit me to book?"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:889
+msgid "No. Puedes cotizar libremente y reservar solo si te conviene."
+msgstr "No. You can quote freely and book only if it works for you."
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:892
+msgid "¿Cómo confirmo mi cita?"
+msgstr "How do I confirm my appointment?"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:893
+msgid ""
+"Luego de llenar la reserva, te escribimos para confirmar el detalle final."
+msgstr ""
+"After you complete the booking, we will write to confirm the final details."
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:900
+msgid "Convierte visitas en reservas con una vista que vende por ti"
+msgstr "Turn visits into bookings with a view that sells for you"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:902
+msgid ""
+"Estamos construyendo este espacio paso a paso para que conozcas servicios, "
+"cotices fácil y reserves cuando estés lista."
+msgstr ""
+"We are building this space step by step so you can explore services, quote "
+"easily, and book when you're ready."
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:905
+msgid "Quiero reservar"
+msgstr "I want to book"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:910
+#: .\aurora_studio_app\templates\aurora_studio_app\reserva.html:453
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\reserva.html:7
+msgid "Hacer Reserva"
+msgstr "Make a Booking"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\reserva.html:348
+msgid "Reserva rápida y confirmación por mensaje"
+msgstr "Fast booking and message confirmation"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\reserva.html:352
+msgid "Emprendimiento local en crecimiento"
+msgstr "Growing local business"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\reserva.html:356
+msgid "Atención organizada por cita"
+msgstr "Appointment-based service"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\reserva.html:362
+msgid "Volver al inicio"
+msgstr "Back to home"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\reserva.html:370
+msgid "Datos del cliente"
+msgstr "Customer details"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\reserva.html:373
+msgid "Nombre"
+msgstr "Name"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\reserva.html:374
+msgid "Tu nombre"
+msgstr "Your name"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\reserva.html:377
+msgid "Teléfono"
+msgstr "Phone"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\reserva.html:378
+msgid "Tu teléfono"
+msgstr "Your phone"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\reserva.html:382
+msgid "Correo electrónico"
+msgstr "Email"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\reserva.html:383
+msgid "correo@ejemplo.com"
+msgstr "email@example.com"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\reserva.html:388
+msgid "Fecha y hora"
+msgstr "Date and time"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\reserva.html:391
+msgid "Fecha"
+msgstr "Date"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\reserva.html:395
+msgid "Hora"
+msgstr "Time"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\reserva.html:397
+msgid "Seleccionar hora"
+msgstr "Select time"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\reserva.html:417
+msgid "Servicios"
+msgstr "Services"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\reserva.html:428
+msgid "Crear Reserva"
+msgstr "Create Booking"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\reserva.html:437
+msgid "Información útil"
+msgstr "Useful information"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\reserva.html:438
+msgid ""
+"Tu cita queda pendiente hasta confirmar disponibilidad del horario "
+"seleccionado."
+msgstr ""
+"Your appointment remains pending until the selected time slot is confirmed "
+"available."
+
+#: .\aurora_studio_app\templates\aurora_studio_app\reserva.html:441
+msgid "Espacio para imagen de producto recomendado"
+msgstr "Space for recommended product image"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\reserva.html:442
+msgid "Espacio para testimonios o resultados"
+msgstr "Space for testimonials or results"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\reserva.html:444
+msgid "¿Dudas rápidas?"
+msgstr "Quick questions?"
+
+#: .\aurora_studio_app\templates\aurora_studio_app\reserva.html:445
+msgid "Si tienes preguntas antes de reservar, escríbenos por WhatsApp."
+msgstr "If you have questions before booking, message us on WhatsApp."
+
+#: .\aurora_studio_app\templates\aurora_studio_app\reserva.html:446
+msgid ""
+"Aquí puedes mostrar políticas de cancelación, tiempos y recomendaciones "
+"previas."
+msgstr ""
+"Here you can show cancellation policies, timing, and previous "
+"recommendations."
+
+#: .\aurora_studio_app\views.py:30
+msgid "Bienvenido a Aurora Studio"
+msgstr "Welcome to Aurora Studio"
+
+#: .\aurora_studio_app\views.py:31
+msgid "Tu belleza, nuestra pasión"
+msgstr "Your beauty, our passion"
+
+#: .\aurora_studio_app\views.py:113
+msgid "Error: "
+msgstr "Error: "
+
+#~ msgid "El servicio con ID {servicio_id} no existe"
+#~ msgstr "The service with ID {servicio_id} does not exist"
+
+#~ msgid "Error al construir la reserva: {str(e)}"
+#~ msgstr "Error building the booking: {str(e)}"
+
+#~ msgid "El campo '{campo}' es requerido"
+#~ msgstr "The '{campo}' field is required"
+
+#~ msgid "La reserva con ID {reserva_id} no existe"
+#~ msgstr "The booking with ID {reserva_id} does not exist"
+
+msgid "Ubicación del local"
+msgstr "Store location"
+
+msgid "Ven a visitarnos o mira la ruta exacta en el mapa."
+msgstr "Visit us or see the exact route on the map."
+
+msgid "Ven a visitarnos o abre la ruta en el mapa."
+msgstr "Visit us or open the route on the map."
+
+msgid "Dirección"
+msgstr "Address"
+
+msgid "Abrir en Google Maps"
+msgstr "Open in Google Maps"
+
+msgid "Ir a reservar"
+msgstr "Go to booking"
+
+msgid "Mapa de ubicación del local"
+msgstr "Store location map"

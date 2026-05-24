@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import date, time
 from decimal import Decimal
 import json
+from urllib.parse import quote_plus
 from urllib import error as urllib_error
 from urllib import request as urllib_request
 import uuid
@@ -10,6 +11,28 @@ import uuid
 from django.conf import settings
 
 from aurora_studio_app.domain.interfaces import EnviadorNotificacion, GeneradorCodigoReserva
+
+
+class UbicacionLocalGoogleMapsAdapter:
+	def __init__(self, direccion: str | None = None):
+		self.direccion = direccion or getattr(settings, "BUSINESS_ADDRESS", "Cll 63 Sur #43 a12 local Torre Alcántara")
+
+	def obtener_direccion(self) -> str:
+		return self.direccion
+
+	def obtener_url_mapa(self) -> str:
+		return getattr(
+			settings,
+			"BUSINESS_MAPS_EMBED_URL",
+			f"https://www.google.com/maps?q={quote_plus(self.direccion)}&output=embed",
+		)
+
+	def obtener_url_ruta(self) -> str:
+		return getattr(
+			settings,
+			"BUSINESS_MAPS_DIRECTIONS_URL",
+			f"https://www.google.com/maps/search/?api=1&query={quote_plus(self.direccion)}",
+		)
 
 
 class EnviadorNotificacionTercero(EnviadorNotificacion):

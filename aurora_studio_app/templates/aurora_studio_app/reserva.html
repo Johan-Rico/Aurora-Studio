@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    {% load static %}
+    {% load i18n static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hacer Reserva | aurora</title>
+    <title>{% trans "Hacer Reserva" %} | aurora</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -260,6 +260,38 @@
             margin-bottom: 8px;
         }
 
+        .location-box {
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(149, 128, 104, 0.2);
+            background: linear-gradient(120deg, rgba(239, 231, 220, 0.92), rgba(216, 204, 188, 0.88));
+            padding: 14px;
+        }
+
+        .location-box h4 {
+            margin-bottom: 8px;
+        }
+
+        .location-box p {
+            color: var(--text-soft);
+            font-size: 0.92rem;
+            margin-bottom: 8px;
+        }
+
+        .location-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .map-frame {
+            width: 100%;
+            min-height: 220px;
+            border: 0;
+            border-radius: var(--radius-lg);
+            margin-top: 10px;
+        }
+
         .wa-float {
             position: fixed;
             right: 18px;
@@ -345,15 +377,15 @@
         <div class="notice">
             <div class="notice-chip">
                 <svg viewBox="0 0 24 24"><path d="M12 6v6l4 2"></path><circle cx="12" cy="12" r="9"></circle></svg>
-                Reserva rapida y confirmacion por mensaje
+                {% trans "Reserva rápida y confirmación por mensaje" %}
             </div>
             <div class="notice-chip">
                 <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"></path></svg>
-                Emprendimiento local en crecimiento
+                {% trans "Emprendimiento local en crecimiento" %}
             </div>
             <div class="notice-chip">
                 <svg viewBox="0 0 24 24"><path d="M4 12h16"></path><path d="M12 4v16"></path></svg>
-                Atencion organizada por cita
+                {% trans "Atención organizada por cita" %}
             </div>
         </div>
 
@@ -379,8 +411,8 @@
                         </div>
                     </div>
                     <div class="field">
-                        <label for="email">Email</label>
-                        <input id="email" type="email" name="email" placeholder="correo@ejemplo.com" required>
+                        <label for="email">{% trans "Correo electrónico" %}</label>
+                        <input id="email" type="email" name="email" placeholder="{% trans 'correo@ejemplo.com' %}" required>
                     </div>
                 </section>
 
@@ -414,7 +446,7 @@
                 </section>
 
                 <section class="section">
-                    <h3>Servicios</h3>
+                    <h3>{% trans "Servicios" %}</h3>
                     <div class="services-list">
                         {% for servicio in servicios %}
                             <label class="service-option">
@@ -433,24 +465,33 @@
             </form>
 
             <aside class="card helper-card">
-                <div class="tips">
-                    <strong>Información útil</strong>
-                    <p>Tu cita queda pendiente hasta confirmar disponibilidad del horario seleccionado.</p>
+                    <div class="tips">
+                    <strong>{% trans "Información útil" %}</strong>
+                    <p>{% trans "Tu cita queda pendiente hasta confirmar disponibilidad del horario seleccionado." %}</p>
                 </div>
-                <div class="visual-slot">Espacio para imagen de promoción</div>
-                <div class="visual-slot">Espacio para imagen de producto recomendado</div>
-                <div class="visual-slot">Espacio para testimonios o resultados</div>
+                <div class="visual-slot">{% trans "Espacio para imagen de promoción" %}</div>
+                <div class="visual-slot">{% trans "Espacio para imagen de producto recomendado" %}</div>
+                <div class="visual-slot">{% trans "Espacio para testimonios o resultados" %}</div>
+                <div class="location-box">
+                    <h4>{% trans "Ubicación del local" %}</h4>
+                    <p><strong>{% trans "Dirección" %}:</strong> {{ ubicacion_local_direccion }}</p>
+                    <p>{% trans "Ven a visitarnos o abre la ruta en el mapa." %}</p>
+                    <div class="location-links">
+                        <a class="link-back" href="{{ ubicacion_local_ruta_url }}" target="_blank" rel="noopener noreferrer">{% trans "Abrir en Google Maps" %}</a>
+                    </div>
+                    <iframe class="map-frame" src="{{ ubicacion_local_mapa_url }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="{% trans 'Mapa de ubicación del local' %}"></iframe>
+                </div>
                 <div class="micro-faq">
-                    <h4>¿Dudas rápidas?</h4>
-                    <p>Si tienes preguntas antes de reservar, escríbenos por WhatsApp.</p>
-                    <p>Aquí puedes mostrar políticas de cancelación, tiempos y recomendaciones previas.</p>
+                    <h4>{% trans "¿Dudas rápidas?" %}</h4>
+                    <p>{% trans "Si tienes preguntas antes de reservar, escríbenos por WhatsApp." %}</p>
+                    <p>{% trans "Aquí puedes mostrar políticas de cancelación, tiempos y recomendaciones previas." %}</p>
                 </div>
             </aside>
         </div>
     </div>
 
     <a class="wa-float" href="https://wa.me/573001112233?text=Hola%20aurora%2C%20quiero%20agendar%20mi%20reserva" target="_blank" rel="noopener noreferrer">
-        WhatsApp
+        {% trans "WhatsApp" %}
     </a>
 
     <script>

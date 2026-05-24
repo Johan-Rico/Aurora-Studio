@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from datetime import datetime
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
 from .infra.repositories import (
@@ -10,8 +11,18 @@ from .infra.repositories import (
     RepositorioDisponibilidadDjango
 )
 from .infra.factories import FactoriaNotificacion
-from .infra.servicios import GeneradorCodigoReservaUUID
+from .infra.servicios import GeneradorCodigoReservaUUID, UbicacionLocalGoogleMapsAdapter
 from .services import ServicioService, ClienteService, DisponibilidadService, ReservaService
+
+
+def _build_ubicacion_context() -> dict:
+    adaptador = UbicacionLocalGoogleMapsAdapter()
+    return {
+        'ubicacion_local_nombre': getattr(settings, 'BUSINESS_NAME', 'Aurora Studio'),
+        'ubicacion_local_direccion': adaptador.obtener_direccion(),
+        'ubicacion_local_mapa_url': adaptador.obtener_url_mapa(),
+        'ubicacion_local_ruta_url': adaptador.obtener_url_ruta(),
+    }
 
 
 class HomeView(View):
@@ -31,6 +42,7 @@ class HomeView(View):
             'descripcion': _('Tu belleza, nuestra pasión'),
             'servicios': servicios,
         }
+        context.update(_build_ubicacion_context())
         
         return render(request, self.template_name, context)
 
@@ -45,7 +57,9 @@ class ReservaView(View):
         servicio_service = ServicioService(repositorio_servicio=repo_servicio)
         servicios = servicio_service.listar_servicios_activos()
         
-        return render(request, self.template_name, {'servicios': servicios})
+        context = {'servicios': servicios}
+        context.update(_build_ubicacion_context())
+        return render(request, self.template_name, context)
     
     def post(self, request):
         try:
@@ -111,4 +125,5 @@ class ReservaView(View):
             return render(request, self.template_name, {
                 'servicios': servicios,
                 'mensaje': _('Error: ') + str(e),
+                **_build_ubicacion_context(),
             })

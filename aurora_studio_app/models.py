@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import EmailValidator, RegexValidator
+from django.utils.translation import gettext_lazy as _
 
 
 class Usuario(models.Model):
@@ -8,7 +9,7 @@ class Usuario(models.Model):
     email = models.EmailField(unique=True, validators=[EmailValidator()])
 
     class Meta:
-        verbose_name_plural = "Usuarios"
+        verbose_name_plural = _("Usuarios")
 
     def __str__(self) -> str:
         return f"{self.nombre} - {self.email}"
@@ -22,7 +23,7 @@ class Cliente(Usuario):
     )
 
     class Meta:
-        verbose_name_plural = "Clientes"
+        verbose_name_plural = _("Clientes")
 
     def __str__(self) -> str:
         return f"Cliente: {self.nombre} - {self.telefono}"
@@ -34,14 +35,14 @@ class Servicio(models.Model):
     categoria = models.CharField(
         max_length=100,
         default="General",
-        help_text="Categoría del servicio (ej: Uñas, Cejas, Pestañas, Facial)",
+        help_text=_("Categoría del servicio (ej: Uñas, Cejas, Pestañas, Facial)"),
     )
     descripcion = models.TextField()
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     duracion = models.DecimalField(
         max_digits=4, 
         decimal_places=2,
-        help_text="Duración del servicio en horas"
+        help_text=_("Duración del servicio en horas")
     )
 
     def __str__(self) -> str:
@@ -51,8 +52,8 @@ class Servicio(models.Model):
 class Reserva(models.Model):
     """Representa un bloque de tiempo ocupado (cita o bloqueo administrativo)."""
     TIPO_CHOICES = [
-        ('cita', 'Cita'),
-        ('bloqueo', 'Bloqueo Administrativo'),
+        ('cita', _("Cita")),
+        ('bloqueo', _("Bloqueo Administrativo")),
     ]
     
     cliente = models.ForeignKey(
@@ -61,7 +62,7 @@ class Reserva(models.Model):
         related_name='reservas',
         null=True,
         blank=True,
-        help_text="Cliente que hace la reserva (null para bloqueos administrativos)"
+        help_text=_("Cliente que hace la reserva (null para bloqueos administrativos)")
     )
     fecha = models.DateField()
     hora_inicio = models.TimeField()
@@ -71,13 +72,13 @@ class Reserva(models.Model):
         unique=True,
         null=True,
         blank=True,
-        help_text="Código único para que la clienta gestione su cita",
+        help_text=_("Código único para que la clienta gestione su cita"),
     )
     tipo = models.CharField(max_length=20, choices=TIPO_CHOICES, default='cita')
 
     class Meta:
         ordering = ['fecha', 'hora_inicio']
-        verbose_name_plural = "Reservas"
+        verbose_name_plural = _("Reservas")
 
     def __str__(self) -> str:
         cliente_info = f" - {self.cliente.nombre}" if self.cliente else ""
@@ -92,11 +93,11 @@ class DetalleCita(models.Model):
     precio_aplicado = models.DecimalField(
         max_digits=10, 
         decimal_places=2,
-        help_text="Precio del servicio en el momento de la reserva"
+        help_text=_("Precio del servicio en el momento de la reserva")
     )
 
     class Meta:
-        verbose_name_plural = "Detalles de Citas"
+        verbose_name_plural = _("Detalles de Citas")
 
     def __str__(self) -> str:
         return f"{self.servicio.nombre} en {self.reserva}"
@@ -105,13 +106,13 @@ class DetalleCita(models.Model):
 class Disponibilidad(models.Model):
     """Define horarios de atención por día de la semana."""
     DIAS_SEMANA = [
-        (0, 'Lunes'),
-        (1, 'Martes'),
-        (2, 'Miércoles'),
-        (3, 'Jueves'),
-        (4, 'Viernes'),
-        (5, 'Sábado'),
-        (6, 'Domingo'),
+        (0, _("Lunes")),
+        (1, _("Martes")),
+        (2, _("Miércoles")),
+        (3, _("Jueves")),
+        (4, _("Viernes")),
+        (5, _("Sábado")),
+        (6, _("Domingo")),
     ]
     
     dia_semana = models.IntegerField(choices=DIAS_SEMANA)
@@ -120,12 +121,12 @@ class Disponibilidad(models.Model):
     horas_bloqueadas = models.JSONField(
         default=list,
         blank=True,
-        help_text="Lista de horas bloqueadas en formato [9, 10, 14] representando las 9:00, 10:00, 14:00"
+        help_text=_("Lista de horas bloqueadas en formato [9, 10, 14] representando las 9:00, 10:00, 14:00")
     )
 
     class Meta:
         ordering = ['dia_semana', 'hora_apertura']
-        verbose_name_plural = "Disponibilidades"
+        verbose_name_plural = _("Disponibilidades")
 
     def __str__(self) -> str:
         return f"{self.get_dia_semana_display()}: {self.hora_apertura} - {self.hora_cierre}"

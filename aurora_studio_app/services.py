@@ -2,6 +2,7 @@
 from datetime import datetime, date, time, timedelta
 from decimal import Decimal
 from django.db import transaction
+from django.utils.translation import gettext as _
 from .models import Servicio, Cliente, Reserva, DetalleCita, Disponibilidad
 from .domain.builders import ConstructorReserva, ErrorConstructorReserva
 from .domain.interfaces import (
@@ -26,7 +27,7 @@ class ServicioService:
     def obtener_servicio(self, servicio_id: int) -> Optional[Servicio]:
         servicio = self.repositorio.obtener_por_id(servicio_id)
         if servicio is None:
-            raise ValueError(f"El servicio con ID {servicio_id} no existe")
+            raise ValueError(_(f"El servicio con ID {servicio_id} no existe"))
         return servicio
     
     def calcular_duracion_total(self, servicios_ids: List[int]) -> Decimal:
@@ -51,10 +52,10 @@ class ClienteService:
         
         # Validaciones
         if not nombre or not email or not telefono:
-            raise ValueError("Todos los campos son requeridos: nombre, email, telefono")
+            raise ValueError(_("Todos los campos son requeridos: nombre, email, telefono"))
         
         if '@' not in email:
-            raise ValueError("Email inválido")
+            raise ValueError(_("Email inválido"))
         
         # Buscar cliente existente
         cliente = self.repositorio.buscar_por_email(email)
@@ -90,7 +91,7 @@ class DisponibilidadService:
         
         # Validar que la fecha no sea pasada
         if fecha < date.today():
-            raise ValueError("No se pueden hacer reservas en fechas pasadas")
+            raise ValueError(_("No se pueden hacer reservas en fechas pasadas"))
         
         # Calcular hora de fin
         inicio_datetime = datetime.combine(fecha, hora_inicio)
@@ -99,11 +100,11 @@ class DisponibilidadService:
         
         # 1. Verificar que esté dentro del horario de atención
         if not self._esta_dentro_horario_atencion(fecha.weekday(), hora_inicio, hora_fin):
-            raise ValueError("El horario solicitado está fuera del horario de atención")
+            raise ValueError(_("El horario solicitado está fuera del horario de atención"))
         
         # 2. Verificar que no haya reservas solapadas
         if self._hay_reservas_solapadas(fecha, hora_inicio, hora_fin):
-            raise ValueError("El horario seleccionado ya está ocupado")
+            raise ValueError(_("El horario seleccionado ya está ocupado"))
         
         return True
 
@@ -115,10 +116,10 @@ class DisponibilidadService:
         """Retorna horas de inicio disponibles para una fecha dada."""
 
         if fecha < date.today():
-            raise ValueError("No se pueden consultar horarios en fechas pasadas")
+            raise ValueError(_("No se pueden consultar horarios en fechas pasadas"))
 
         if duracion_horas <= 0:
-            raise ValueError("La duración debe ser mayor a cero")
+            raise ValueError(_("La duración debe ser mayor a cero"))
 
         disponibilidad = self.repositorio_disponibilidad.obtener_por_dia_semana(fecha.weekday())
         if disponibilidad is None:
@@ -126,7 +127,7 @@ class DisponibilidadService:
 
         duracion_minutos = int(Decimal(duracion_horas) * Decimal('60'))
         if duracion_minutos <= 0:
-            raise ValueError("La duración debe ser mayor a cero")
+            raise ValueError(_("La duración debe ser mayor a cero"))
 
         inicio_jornada = datetime.combine(fecha, disponibilidad.hora_apertura)
         fin_jornada = datetime.combine(fecha, disponibilidad.hora_cierre)
@@ -260,7 +261,7 @@ class ReservaService:
             reserva = self.repositorio_reserva.guardar_reserva_con_detalles(reserva, detalles)
             
         except ErrorConstructorReserva as e:
-            raise ValueError(f"Error al construir la reserva: {str(e)}")
+            raise ValueError(_(f"Error al construir la reserva: {str(e)}"))
         
         # 7. Enviar notificación usando EnviadorNotificacion
         if self.enviador_notificacion:
@@ -291,10 +292,10 @@ class ReservaService:
         
         for campo in campos_requeridos:
             if campo not in datos or not datos[campo]:
-                raise ValueError(f"El campo '{campo}' es requerido")
+                raise ValueError(_(f"El campo '{campo}' es requerido"))
         
         if not isinstance(datos['servicios_ids'], list) or len(datos['servicios_ids']) == 0:
-            raise ValueError("Debe seleccionar al menos un servicio")
+            raise ValueError(_("Debe seleccionar al menos un servicio"))
     
     def cancelar_reserva(self, reserva_id: int) -> None:
         """Cancela una reserva existente."""
@@ -302,11 +303,11 @@ class ReservaService:
         reserva = self.repositorio_reserva.obtener_por_id(reserva_id)
         
         if reserva is None:
-            raise ValueError(f"La reserva con ID {reserva_id} no existe")
+            raise ValueError(_(f"La reserva con ID {reserva_id} no existe"))
         
         # Validar que se pueda cancelar
         if reserva.fecha < date.today():
-            raise ValueError("No se pueden cancelar reservas pasadas")
+            raise ValueError(_("No se pueden cancelar reservas pasadas"))
         
         # Eliminar la reserva
         self.repositorio_reserva.eliminar(reserva)
@@ -315,7 +316,7 @@ class ReservaService:
         """Cancela una reserva usando email de clienta y código único."""
 
         if not email or not codigo_reserva:
-            raise ValueError("Email y código de reserva son requeridos")
+            raise ValueError(_("Email y código de reserva son requeridos"))
 
         reserva = self.repositorio_reserva.obtener_por_email_y_codigo(
             email=email,
@@ -323,9 +324,9 @@ class ReservaService:
         )
 
         if reserva is None:
-            raise ValueError("No existe una reserva con ese email y código")
+            raise ValueError(_("No existe una reserva con ese email y código"))
 
         if reserva.fecha < date.today():
-            raise ValueError("No se pueden cancelar reservas pasadas")
+            raise ValueError(_("No se pueden cancelar reservas pasadas"))
 
         self.repositorio_reserva.eliminar(reserva)

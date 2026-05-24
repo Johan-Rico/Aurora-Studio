@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    {% load static %}
+    {% load i18n static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>aurora</title>
@@ -446,6 +446,66 @@
             max-width: 520px;
         }
 
+        .location-section {
+            margin-top: 24px;
+            border-radius: var(--radius-xl);
+            background: rgba(239, 231, 220, 0.96);
+            border: 1px solid rgba(149, 128, 104, 0.22);
+            box-shadow: var(--shadow);
+            padding: 18px;
+        }
+
+        .location-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 16px;
+            align-items: stretch;
+        }
+
+        .location-copy h3 {
+            margin-bottom: 8px;
+        }
+
+        .location-copy p {
+            color: var(--text-soft);
+            margin-bottom: 10px;
+        }
+
+        .location-meta {
+            display: grid;
+            gap: 8px;
+            margin: 14px 0 16px;
+        }
+
+        .location-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            width: fit-content;
+            padding: 7px 11px;
+            border-radius: 999px;
+            background: rgba(199, 168, 90, 0.16);
+            border: 1px solid rgba(199, 168, 90, 0.24);
+            color: #56483a;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .location-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .map-frame {
+            width: 100%;
+            min-height: 320px;
+            border: 0;
+            border-radius: var(--radius-lg);
+            box-shadow: inset 0 0 0 1px rgba(149, 128, 104, 0.18);
+            background: #ddd3c5;
+        }
+
         .faq {
             margin-top: 22px;
             display: grid;
@@ -681,6 +741,10 @@
                 grid-template-columns: 1fr;
             }
 
+            .location-grid {
+                grid-template-columns: 1fr;
+            }
+
             .promo-stack,
             .faq,
             .quote-grid,
@@ -719,21 +783,21 @@
                 </span>
                 <span>aurora</span>
             </div>
-            <a class="btn btn-soft" href="{% url 'reserva' %}">Reservar ahora</a>
+            <a class="btn btn-soft" href="{% url 'reserva' %}">{% trans "Reservar ahora" %}</a>
         </header>
 
         <div class="info-strip">
             <div class="info-chip">
                 <svg viewBox="0 0 24 24"><path d="M12 6v6l4 2"></path><circle cx="12" cy="12" r="9"></circle></svg>
-                Agenda por cita y atencion con tiempo
+                {% trans "Agenda por cita y atención con tiempo" %}
             </div>
             <div class="info-chip">
                 <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"></path></svg>
-                Precios claros desde el inicio
+                {% trans "Precios claros desde el inicio" %}
             </div>
             <div class="info-chip">
                 <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.6-7 10-7 10Z"></path></svg>
-                Cuidado personalizado en cada visita
+                {% trans "Cuidado personalizado en cada visita" %}
             </div>
         </div>
 
@@ -752,9 +816,9 @@
             </article>
 
             <aside class="hero-gallery">
-                <div class="img-slot large">Espacio para imagen principal o producto estrella</div>
-                <div class="img-slot">Espacio para foto de servicio</div>
-                <div class="img-slot">Espacio para foto de resultado</div>
+                <div class="img-slot large">{% trans "Espacio para imagen principal o producto estrella" %}</div>
+                <div class="img-slot">{% trans "Espacio para foto de servicio" %}</div>
+                <div class="img-slot">{% trans "Espacio para foto de resultado" %}</div>
             </aside>
         </section>
 
@@ -798,7 +862,7 @@
                         {% endfor %}
                     {% else %}
                         <div class="quote-item">
-                            <small>No hay servicios para cotizar todavía.</small>
+                            <small>{% trans "No hay servicios para cotizar todavía." %}</small>
                         </div>
                     {% endif %}
                 </div>
@@ -814,100 +878,119 @@
         </section>
 
         <section>
-            <h2 class="section-title">Galería inspiracional</h2>
-            <p class="section-sub">Bloques listos para subir imágenes de productos, sets o trabajos.</p>
+            <h2 class="section-title">{% trans "Galería inspiracional" %}</h2>
+            <p class="section-sub">{% trans "Bloques listos para subir imágenes de productos, sets o trabajos." %}</p>
             <div class="inspiration">
-                <div class="img-slot">Producto destacado #1</div>
-                <div class="img-slot">Antes y después</div>
-                <div class="img-slot">Kit recomendado</div>
+                <div class="img-slot">{% trans "Producto destacado #1" %}</div>
+                <div class="img-slot">{% trans "Antes y después" %}</div>
+                <div class="img-slot">{% trans "Kit recomendado" %}</div>
             </div>
         </section>
 
         <section class="promo-stack">
             <article class="promo-card">
-                <h3>Promo de temporada</h3>
-                <p>Ejemplo de texto real: Combo de manos + diseño sencillo por precio especial esta semana.</p>
-                <div class="img-slot promo-slot">Espacio para imagen de promoción</div>
+                <h3>{% trans "Promo de temporada" %}</h3>
+                <p>{% trans "Ejemplo de texto real: Combo de manos + diseño sencillo por precio especial esta semana." %}</p>
+                <div class="img-slot promo-slot">{% trans "Espacio para imagen de promoción" %}</div>
             </article>
             <article class="promo-card">
-                <h3>Producto bestseller</h3>
-                <p>Puedes mostrar aquí el producto que más recomiendas para cuidado en casa.</p>
-                <div class="img-slot promo-slot">Espacio para imagen de producto</div>
+                <h3>{% trans "Producto bestseller" %}</h3>
+                <p>{% trans "Puedes mostrar aquí el producto que más recomiendas para cuidado en casa." %}</p>
+                <div class="img-slot promo-slot">{% trans "Espacio para imagen de producto" %}</div>
             </article>
         </section>
 
         <section class="urgency-panel">
             <article>
-                <h3>Cupos de hoy: <span id="daily-spots">5</span></h3>
-                <p>Manejamos agenda corta para atender con calma. Si te interesa un horario, te sugerimos reservar pronto.</p>
+                <h3>{% trans "Cupos de hoy:" %} <span id="daily-spots">5</span></h3>
+                <p>{% trans "Manejamos agenda corta para atender con calma. Si te interesa un horario, te sugerimos reservar pronto." %}</p>
                 <div class="urgency-badges">
-                    <span>Atención personalizada</span>
-                    <span>Cupos limitados</span>
-                    <span>Promos de inicio</span>
+                    <span>{% trans "Atención personalizada" %}</span>
+                    <span>{% trans "Cupos limitados" %}</span>
+                    <span>{% trans "Promos de inicio" %}</span>
                 </div>
             </article>
             <article class="countdown-box">
-                <p class="countdown-label">La promo termina en:</p>
+                <p class="countdown-label">{% trans "La promo termina en:" %}</p>
                 <p id="promo-countdown" class="countdown-time">00:00:00</p>
             </article>
         </section>
 
         <section class="before-after">
-            <h2 class="section-title">Transformaciones Antes y Después</h2>
-            <p class="section-sub">Ideal para emprendimientos: muestra resultados reales y gana confianza al instante.</p>
+            <h2 class="section-title">{% trans "Transformaciones Antes y Después" %}</h2>
+            <p class="section-sub">{% trans "Ideal para emprendimientos: muestra resultados reales y gana confianza al instante." %}</p>
             <div class="before-after-grid">
                 <article class="ba-card">
-                    <h4>Diseño de uñas</h4>
+                    <h4>{% trans "Diseño de uñas" %}</h4>
                     <div class="ba-images">
-                        <div class="ba-slot">ANTES<br>coloca foto aquí</div>
-                        <div class="ba-slot">DESPUÉS<br>coloca foto aquí</div>
+                        <div class="ba-slot">{% trans "ANTES" %}<br>{% trans "coloca foto aquí" %}</div>
+                        <div class="ba-slot">{% trans "DESPUÉS" %}<br>{% trans "coloca foto aquí" %}</div>
                     </div>
                 </article>
                 <article class="ba-card">
-                    <h4>Lifting de pestañas</h4>
+                    <h4>{% trans "Lifting de pestañas" %}</h4>
                     <div class="ba-images">
-                        <div class="ba-slot">ANTES<br>coloca foto aquí</div>
-                        <div class="ba-slot">DESPUÉS<br>coloca foto aquí</div>
+                        <div class="ba-slot">{% trans "ANTES" %}<br>{% trans "coloca foto aquí" %}</div>
+                        <div class="ba-slot">{% trans "DESPUÉS" %}<br>{% trans "coloca foto aquí" %}</div>
                     </div>
                 </article>
             </div>
         </section>
 
         <section>
-            <h2 class="section-title">Preguntas frecuentes</h2>
+            <h2 class="section-title">{% trans "Preguntas frecuentes" %}</h2>
             <div class="faq">
                 <article class="faq-item">
-                    <h4>¿Cuánto dura una cita?</h4>
-                    <p>Depende del servicio, normalmente entre 1h y 2h.</p>
+                    <h4>{% trans "¿Cuánto dura una cita?" %}</h4>
+                    <p>{% trans "Depende del servicio, normalmente entre 1h y 2h." %}</p>
                 </article>
                 <article class="faq-item">
-                    <h4>¿Puedo reagendar?</h4>
-                    <p>Sí, con anticipación puedes mover tu cita sin problema.</p>
+                    <h4>{% trans "¿Puedo reagendar?" %}</h4>
+                    <p>{% trans "Sí, con anticipación puedes mover tu cita sin problema." %}</p>
                 </article>
                 <article class="faq-item">
-                    <h4>¿La cotización me obliga a reservar?</h4>
-                    <p>No. Puedes cotizar libremente y reservar solo si te conviene.</p>
+                    <h4>{% trans "¿La cotización me obliga a reservar?" %}</h4>
+                    <p>{% trans "No. Puedes cotizar libremente y reservar solo si te conviene." %}</p>
                 </article>
                 <article class="faq-item">
-                    <h4>¿Cómo confirmo mi cita?</h4>
-                    <p>Luego de llenar la reserva, te escribimos para confirmar el detalle final.</p>
+                    <h4>{% trans "¿Cómo confirmo mi cita?" %}</h4>
+                    <p>{% trans "Luego de llenar la reserva, te escribimos para confirmar el detalle final." %}</p>
                 </article>
             </div>
         </section>
 
         <section class="footer-cta">
             <div>
-                <h3>Convierte visitas en reservas con una vista que vende por ti</h3>
+                <h3>{% trans "Convierte visitas en reservas con una vista que vende por ti" %}</h3>
                 <p>
-                    Estamos construyendo este espacio paso a paso para que conozcas servicios, cotices fácil y reserves cuando estés lista.
+                    {% trans "Estamos construyendo este espacio paso a paso para que conozcas servicios, cotices fácil y reserves cuando estés lista." %}
                 </p>
             </div>
-            <a class="btn btn-primary" href="{% url 'reserva' %}">Quiero reservar</a>
+            <a class="btn btn-primary" href="{% url 'reserva' %}">{% trans "Quiero reservar" %}</a>
+        </section>
+
+        <section class="location-section">
+            <div class="location-grid">
+                <div class="location-copy">
+                    <span class="location-pill">{% trans "Ubicación del local" %}</span>
+                    <h3>{{ ubicacion_local_nombre }}</h3>
+                    <p>{% trans "Ven a visitarnos o mira la ruta exacta en el mapa." %}</p>
+                    <div class="location-meta">
+                        <strong>{% trans "Dirección" %}</strong>
+                        <span>{{ ubicacion_local_direccion }}</span>
+                    </div>
+                    <div class="location-actions">
+                        <a class="btn btn-primary" href="{{ ubicacion_local_ruta_url }}" target="_blank" rel="noopener noreferrer">{% trans "Abrir en Google Maps" %}</a>
+                        <a class="btn btn-soft" href="{% url 'reserva' %}">{% trans "Ir a reservar" %}</a>
+                    </div>
+                </div>
+                <iframe class="map-frame" src="{{ ubicacion_local_mapa_url }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="{% trans 'Mapa de ubicación del local' %}"></iframe>
+            </div>
         </section>
     </div>
 
     <a class="wa-float" href="https://wa.me/573001112233?text=Hola%20aurora%2C%20quiero%20reservar" target="_blank" rel="noopener noreferrer">
-        WhatsApp
+        {% trans "WhatsApp" %}
     </a>
 
     <script>

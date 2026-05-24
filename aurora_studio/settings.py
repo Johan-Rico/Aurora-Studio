@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 from pathlib import Path
+from urllib.parse import quote_plus
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -160,6 +161,21 @@ LOCALE_PATHS = [BASE_DIR / 'locale']
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ========== CONFIGURACIÓN DE AURORA STUDIO ==========
+
+# Ubicación del local
+BUSINESS_NAME = os.environ.get('BUSINESS_NAME', 'Aurora Studio')
+BUSINESS_ADDRESS = os.environ.get(
+    'BUSINESS_ADDRESS',
+    'Cll 63 Sur #43 a12 local Torre Alcántara',
+)
+BUSINESS_MAPS_EMBED_URL = os.environ.get(
+    'BUSINESS_MAPS_EMBED_URL',
+    f'https://www.google.com/maps?q={quote_plus(BUSINESS_ADDRESS)}&output=embed',
+)
+BUSINESS_MAPS_DIRECTIONS_URL = os.environ.get(
+    'BUSINESS_MAPS_DIRECTIONS_URL',
+    f'https://www.google.com/maps/search/?api=1&query={quote_plus(BUSINESS_ADDRESS)}',
+)
 
 # Sistema de notificaciones
 # Opciones visibles: 'mock' (imprime en consola) o 'smtp' (envía por el microservicio Flask)

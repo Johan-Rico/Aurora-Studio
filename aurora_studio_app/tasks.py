@@ -4,7 +4,13 @@ from decimal import Decimal
 from datetime import date, time
 from types import SimpleNamespace
 
-from aurora_studio_app.infra.factories import FactoriaNotificacion
+from django.conf import settings
+
+from aurora_studio_app.infra.servicios import (
+    EnviadorNotificacionFlask,
+    EnviadorNotificacionMock,
+    EnviadorNotificacionTercero,
+)
 
 # Intentar usar shared_task de Celery cuando esté disponible; si no,
 # definir un decorador fallback que ejecuta la función sincrónicamente
@@ -41,7 +47,17 @@ def enviar_confirmacion_reserva_task(
 ):
     """Tarea Celery que delega envío de notificación al enviador configurado."""
     try:
-        enviador = FactoriaNotificacion.crear_enviador()
+        modo_envio = getattr(settings, "NOTIFICATION_SENDER", "mock").strip().lower()
+
+        if modo_envio == "mock":
+            enviador = EnviadorNotificacionMock()
+        elif modo_envio in {"tercero", "third", "third_party"}:
+            enviador = EnviadorNotificacionTercero()
+        else:
+            # En modo smtp/email/correo, el worker usa el adaptador Flask,
+            # que a su vez realiza el envío SMTP.
+            enviador = EnviadorNotificacionFlask()
+
         # Normalizar cadenas ISO a objetos date/time antes de llamar al enviador
         if isinstance(fecha_reserva, str):
             try:
