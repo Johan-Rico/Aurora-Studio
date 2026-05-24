@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from decimal import Decimal
+from datetime import date, time
 from types import SimpleNamespace
 
 from aurora_studio_app.infra.factories import FactoriaNotificacion
@@ -41,15 +42,42 @@ def enviar_confirmacion_reserva_task(
     """Tarea Celery que delega envío de notificación al enviador configurado."""
     try:
         enviador = FactoriaNotificacion.crear_enviador()
+        # Normalizar cadenas ISO a objetos date/time antes de llamar al enviador
+        if isinstance(fecha_reserva, str):
+            try:
+                fecha_obj = date.fromisoformat(fecha_reserva)
+            except Exception:
+                fecha_obj = fecha_reserva
+        else:
+            fecha_obj = fecha_reserva
+
+        if isinstance(hora_inicio, str):
+            try:
+                hora_inicio_obj = time.fromisoformat(hora_inicio)
+            except Exception:
+                hora_inicio_obj = hora_inicio
+        else:
+            hora_inicio_obj = hora_inicio
+
+        if isinstance(hora_fin, str):
+            try:
+                hora_fin_obj = time.fromisoformat(hora_fin)
+            except Exception:
+                hora_fin_obj = hora_fin
+        else:
+            hora_fin_obj = hora_fin
+
+        precio = Decimal(precio_total) if not isinstance(precio_total, Decimal) else precio_total
+
         enviador.enviar_confirmacion_reserva(
             correo_destino=correo_destino,
             nombre_cliente=nombre_cliente,
             codigo_reserva=codigo_reserva,
-            fecha_reserva=fecha_reserva,
-            hora_inicio=hora_inicio,
-            hora_fin=hora_fin,
+            fecha_reserva=fecha_obj,
+            hora_inicio=hora_inicio_obj,
+            hora_fin=hora_fin_obj,
             nombres_servicios=nombres_servicios,
-            precio_total=Decimal(precio_total),
+            precio_total=precio,
         )
     except Exception as exc:  # pragma: no cover - retry on any failure
         # Si estamos en modo fallback (sin celery), `self` puede no exponer retry
