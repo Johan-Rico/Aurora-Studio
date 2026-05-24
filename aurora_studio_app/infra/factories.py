@@ -7,6 +7,7 @@ from aurora_studio_app.domain.interfaces import EnviadorNotificacion
 from aurora_studio_app.infra.servicios import (
 	EnviadorNotificacionFlask,
 	EnviadorNotificacionMock,
+    EnviadorNotificacionCelery,
 )
 
 
@@ -23,6 +24,9 @@ class FactoriaNotificacion:
 		tipo = tipo.lower()
 		
 		if tipo in {"flask", "http", "email"}:
+			# Si la configuración indica envío asíncrono, devolver el enviador Celery
+			if getattr(settings, 'NOTIFICATIONS_ASYNC', False):
+				return EnviadorNotificacionCelery()
 			return EnviadorNotificacionFlask()
 		elif tipo == "mock":
 			return EnviadorNotificacionMock()

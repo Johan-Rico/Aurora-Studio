@@ -21,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-_u#_z*8*5d*cc5w2vs4lr(5-d5tksjjdn4%9^+myl)22+@-o1m'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-_u#_z*8*5d*cc5w2vs4lr(5-d5tksjjdn4%9^+myl)22+@-o1m')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', '1') == '1'
 
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(',')
+ALLOWED_HOSTS = [host.strip() for host in os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(',') if host.strip()]
 
 
 # Application definition
@@ -127,6 +127,12 @@ USE_I18N = True
 
 USE_TZ = True
 
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',')
+    if origin.strip()
+]
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
@@ -151,3 +157,10 @@ NOTIFICATIONS_SERVICE_URL = os.environ.get(
     'NOTIFICATIONS_SERVICE_URL',
     'http://localhost:5001/api/v2/funcionalidad',
 )
+
+# Celery / Redis
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'redis://redis:6379/0')
+CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND', CELERY_BROKER_URL)
+
+# Habilitar envío de notificaciones de forma asíncrona mediante Celery
+NOTIFICATIONS_ASYNC = os.environ.get('NOTIFICATIONS_ASYNC', '0') == '1'

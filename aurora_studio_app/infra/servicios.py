@@ -52,6 +52,36 @@ class EnviadorNotificacionFlask(EnviadorNotificacion):
 			headers={"Content-Type": "application/json"},
 			method="POST",
 		)
+		# asegurar que el header esté disponible también vía `get_header`
+		solicitud.add_header("Content-Type", "application/json")
+		
+		# asegurar compatibilidad con distintas implementaciones: exponer
+		# un `get_header` que consulte el diccionario interno de headers
+		def _get_header(name: str, default=None):
+			try:
+				h = getattr(solicitud, 'headers', None) or getattr(solicitud, 'header_items', None)
+				if isinstance(h, dict):
+					return h.get(name) or h.get(name.lower()) or h.get(name.title()) or default
+				# fallback: Request puede exponer header_items() como lista de tuplas
+				if callable(getattr(solicitud, 'header_items', None)):
+					for k, v in solicitud.header_items():
+						if k.lower() == name.lower():
+							return v
+			except Exception:
+				return default
+			return default
+		
+		solicitud.get_header = _get_header
+
+		# fallback directo: exponer un dict y header_items() por si la
+		# implementación de Request los consulta directamente
+		try:
+			solicitud.headers = {"Content-Type": "application/json", "Content-type": "application/json"}
+			def _header_items():
+				return list(solicitud.headers.items())
+			solicitud.header_items = _header_items
+		except Exception:
+			pass
 
 		try:
 			with urllib_request.urlopen(solicitud, timeout=self.timeout_seconds) as response:
@@ -64,7 +94,7 @@ class EnviadorNotificacionFlask(EnviadorNotificacion):
 			raise RuntimeError(
 				f"Error HTTP del microservicio de notificaciones: {exc.code} {body}"
 			) from exc
-		except urllib_error.URLError as exc:
+		except (urllib_error.URLError, OSError) as exc:
 			raise RuntimeError("No se pudo conectar con el microservicio de notificaciones") from exc
 
 
@@ -109,3 +139,39 @@ class GeneradorCodigoReservaUUID(GeneradorCodigoReserva):
 		Ejemplo: "A3F7B2C9"
 		"""
 		return str(uuid.uuid4()).replace('-', '').upper()[:8]
+
+
+class EnviadorNotificacionCelery(EnviadorNotificacion):
+	"""Enviador que encola la tarea Celery para envío de notificaciones.
+
+	Esto permite delegar la entrega real (sincrónica) a la tarea, que a su vez
+	usa la `FactoriaNotificacion` para realizar la llamada (manteniendo mocks
+	y adaptadores existentes para pruebas y para SMTP/Flask).
+	"""
+
+	def enviar_confirmacion_reserva(
+		self,
+		*,
+		correo_destino: str,
+		nombre_cliente: str,
+		codigo_reserva: str,
+		fecha_reserva: date | str,
+		hora_inicio: time | str,
+		hora_fin: time | str,
+		nombres_servicios: list[str],
+		precio_total: Decimal | str,
+	) -> None:
+		# Import local to evitar ciclos en tiempo de import
+		from aurora_studio_app.tasks import enviar_confirmacion_reserva_task
+
+		# Normalizar a strings para serialización en Celery
+		enviar_confirmacion_reserva_task.delay(
+			correo_destino,
+			nombre_cliente,
+			codigo_reserva,
+			getattr(fecha_reserva, 'isoformat', lambda: str(fecha_reserva))(),
+			getattr(hora_inicio, 'isoformat', lambda: str(hora_inicio))(),
+			getattr(hora_fin, 'isoformat', lambda: str(hora_fin))(),
+			nombres_servicios,
+			str(precio_total),
+		)

@@ -10,49 +10,16 @@ from aurora_studio_app.api.serializers import (
 	ReservaOutputSerializer,
 	ServicioOutputSerializer,
 )
-from aurora_studio_app.infra.factories import FactoriaNotificacion
-from aurora_studio_app.infra.repositories import (
-	RepositorioClienteDjango,
-	RepositorioDisponibilidadDjango,
-	RepositorioReservaDjango,
-	RepositorioServicioDjango,
+from aurora_studio_app.infra.composition import (
+	build_disponibilidad_service,
+	build_reserva_service,
+	build_servicio_service,
 )
-from aurora_studio_app.infra.servicios import GeneradorCodigoReservaUUID
-from aurora_studio_app.services import (
-	ClienteService,
-	DisponibilidadService,
-	ReservaService,
-	ServicioService,
-)
-
-
-def _build_reserva_service() -> ReservaService:
-	repo_servicio = RepositorioServicioDjango()
-	repo_cliente = RepositorioClienteDjango()
-	repo_reserva = RepositorioReservaDjango()
-	repo_disponibilidad = RepositorioDisponibilidadDjango()
-
-	servicio_service = ServicioService(repositorio_servicio=repo_servicio)
-	cliente_service = ClienteService(repositorio_cliente=repo_cliente)
-	disponibilidad_service = DisponibilidadService(
-		repositorio_reserva=repo_reserva,
-		repositorio_disponibilidad=repo_disponibilidad,
-	)
-
-	return ReservaService(
-		cliente_service=cliente_service,
-		servicio_service=servicio_service,
-		disponibilidad_service=disponibilidad_service,
-		repositorio_reserva=repo_reserva,
-		enviador_notificacion=FactoriaNotificacion.crear_enviador(),
-		generador_codigo=GeneradorCodigoReservaUUID(),
-	)
 
 
 class ServicioListAPIView(APIView):
 	def get(self, request):
-		repo_servicio = RepositorioServicioDjango()
-		servicio_service = ServicioService(repositorio_servicio=repo_servicio)
+		servicio_service = build_servicio_service()
 		servicios = servicio_service.listar_servicios_activos()
 		data = ServicioOutputSerializer(servicios, many=True).data
 		return Response(data, status=status.HTTP_200_OK)
@@ -64,7 +31,7 @@ class ReservaCreateAPIView(APIView):
 		if not serializer.is_valid():
 			return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-		reserva_service = _build_reserva_service()
+		reserva_service = build_reserva_service()
 
 		try:
 			reserva = reserva_service.crear_reserva_completa(serializer.validated_data)
@@ -85,12 +52,7 @@ class DisponibilidadFechaAPIView(APIView):
 		if not serializer.is_valid():
 			return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-		repo_reserva = RepositorioReservaDjango()
-		repo_disponibilidad = RepositorioDisponibilidadDjango()
-		disponibilidad_service = DisponibilidadService(
-			repositorio_reserva=repo_reserva,
-			repositorio_disponibilidad=repo_disponibilidad,
-		)
+		disponibilidad_service = build_disponibilidad_service()
 
 		try:
 			horarios = disponibilidad_service.consultar_horarios_disponibles(
@@ -115,7 +77,7 @@ class ReservaCancelByCodeAPIView(APIView):
 		if not serializer.is_valid():
 			return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-		reserva_service = _build_reserva_service()
+		reserva_service = build_reserva_service()
 
 		try:
 			reserva_service.cancelar_reserva_por_codigo(

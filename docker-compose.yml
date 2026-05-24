@@ -5,26 +5,40 @@ services:
       dockerfile: Dockerfile
     container_name: aurora-django
     environment:
-      DJANGO_DEBUG: "1"
-      DJANGO_ALLOWED_HOSTS: "*"
-      USE_POSTGRES: "0"
-      NOTIFICATION_SENDER: flask
-      NOTIFICATIONS_SERVICE_URL: http://flask:5001/api/v2/funcionalidad
+      DJANGO_DEBUG: ${DJANGO_DEBUG:-0}
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1}
+      DJANGO_CSRF_TRUSTED_ORIGINS: ${DJANGO_CSRF_TRUSTED_ORIGINS:-http://localhost:8080}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-change-me-in-production}
+      USE_POSTGRES: ${USE_POSTGRES:-0}
+      NOTIFICATION_SENDER: ${NOTIFICATION_SENDER:-flask}
+      NOTIFICATIONS_SERVICE_URL: ${NOTIFICATIONS_SERVICE_URL:-http://flask:5001/api/v2/funcionalidad}
+      NOTIFICATIONS_ASYNC: ${NOTIFICATIONS_ASYNC:-1}
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL:-redis://redis:6379/0}
+      CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND:-redis://redis:6379/0}
     command: sh -c "python manage.py migrate && gunicorn aurora_studio.wsgi:application --bind 0.0.0.0:8000 --workers 3"
     volumes:
       - ./db.sqlite3:/app/db.sqlite3
     ports:
       - "8000:8000"
+    restart: unless-stopped
 
   flask:
     build:
       context: ./microservices/flask_funcionalidad
       dockerfile: Dockerfile
     container_name: aurora-flask
-    env_file:
-      - ./microservices/flask_funcionalidad/.env
+    environment:
+      NOTIFICATION_SENDER: ${NOTIFICATION_SENDER:-MOCK}
+      SMTP_HOST: ${SMTP_HOST:-smtp.gmail.com}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM_EMAIL: ${SMTP_FROM_EMAIL:-}
+      SMTP_USE_TLS: ${SMTP_USE_TLS:-true}
+      SMTP_USE_SSL: ${SMTP_USE_SSL:-false}
     ports:
       - "5001:5001"
+    restart: unless-stopped
 
   nginx:
     image: nginx:1.27-alpine
@@ -33,6 +47,31 @@ services:
       - django
       - flask
     ports:
-      - "8080:80"
+      - "${NGINX_HOST_PORT:-8080}:80"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: aurora-redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+  celery-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aurora-celery
+    depends_on:
+      - django
+      - redis
+    environment:
+      DJANGO_DEBUG: ${DJANGO_DEBUG:-0}
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL:-redis://redis:6379/0}
+      CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND:-redis://redis:6379/0}
+      NOTIFICATION_SENDER: ${NOTIFICATION_SENDER:-flask}
+      NOTIFICATIONS_SERVICE_URL: ${NOTIFICATIONS_SERVICE_URL:-http://flask:5001/api/v2/funcionalidad}
+    command: sh -c "celery -A aurora_studio worker --loglevel=info"
+    restart: unless-stopped
