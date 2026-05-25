@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    {% load i18n static %}
+    {% load i18n static l10n %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AURORA</title>
@@ -533,6 +533,9 @@
 
         .quote-box {
             margin-top: 24px;
+            max-width: 980px;
+            margin-left: auto;
+            margin-right: auto;
             border-radius: var(--radius-xl);
             background: linear-gradient(130deg, #f5eee3, #ddd2c0);
             border: 1px solid rgba(104, 88, 69, 0.18);
@@ -545,6 +548,7 @@
             grid-template-columns: 1.1fr 0.9fr;
             gap: 14px;
             margin-top: 12px;
+            align-items: start;
         }
 
         .quote-list {
@@ -589,6 +593,8 @@
             display: grid;
             gap: 8px;
             align-content: start;
+            justify-self: center;
+            width: 100%;
         }
 
         .quote-total {
@@ -1116,7 +1122,7 @@
                         {% for servicio in servicios %}
                             <div class="quote-item">
                                 <label>
-                                    <input class="quote-service" type="checkbox" data-precio="{{ servicio.precio }}" data-duracion="{{ servicio.duracion }}">
+                                    <input class="quote-service" type="checkbox" data-precio="{{ servicio.precio|unlocalize }}" data-duracion="{{ servicio.duracion|unlocalize }}">
                                     <span>{{ servicio.nombre }}</span>
                                 </label>
                                 <small>${{ servicio.precio }} | {{ servicio.duracion }}h</small>
@@ -1130,7 +1136,9 @@
                 </div>
                 <aside class="quote-summary">
                     <strong>{% trans "Total estimado" %}</strong>
-                    <p id="quote-total" class="quote-total">$0</p>
+                    <div class="quote-total-row">
+                        <p id="quote-total" class="quote-total">$0</p>
+                    </div>
                     <p>{% trans "Tiempo estimado:" %} <strong id="quote-hours">0h</strong></p>
                     <p>{% trans "Servicios seleccionados:" %} <strong id="quote-count">0</strong></p>
                     <p class="quote-note">{% trans "Este valor es informativo y puede variar según evaluación final." %}</p>
@@ -1297,8 +1305,11 @@
             let hours = 0;
 
             services.forEach((service) => {
-                total += Number(service.dataset.precio || 0);
-                hours += Number(service.dataset.duracion || 0);
+                const price = Number.parseFloat(String(service.dataset.precio || 0));
+                const duration = Number.parseFloat(String(service.dataset.duracion || 0));
+
+                total += Number.isFinite(price) ? price : 0;
+                hours += Number.isFinite(duration) ? duration : 0;
             });
 
             const totalNode = document.getElementById("quote-total");

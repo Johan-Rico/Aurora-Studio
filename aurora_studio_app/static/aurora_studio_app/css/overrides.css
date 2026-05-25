@@ -24,13 +24,25 @@
 
 #cotizador .quote-summary {
     align-content: start;
+    justify-items: center;
+    text-align: center;
+}
+
+#cotizador .quote-total-row {
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }
 
 #cotizador .quote-total {
-    display: block;
-    width: 100%;
-    text-align: center !important;
-    margin: 0 auto !important;
+    /* Keep the value in its own centered row while aligning the number to the right. */
+    display: block !important;
+    width: min(100%, 240px) !important;
+    min-width: 0 !important;
+    padding: 8px 0 !important;
+    box-sizing: border-box !important;
+    text-align: right !important;
+    margin: 0 !important;
 }
 
 /* Mejor legibilidad en tablets */
