@@ -4,24 +4,26 @@
     {% load i18n static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% trans "Hacer Reserva" %} | aurora</title>
+    <title>{% trans "Hacer Reserva" %} | AURORA</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #111111;
-            --surface: rgba(239, 231, 220, 0.95);
-            --surface-soft: #e4dacd;
-            --text-main: #1a1714;
-            --text-soft: #52473d;
-            --accent: #695845;
-            --accent-2: #c7a85a;
-            --peach: #d8ccbc;
-            --line: rgba(149, 128, 104, 0.24);
+            --bg-main: #fbf8f3;
+            --bg-soft: #f2ebe2;
+            --surface: rgba(255,255,255,0.98);
+            --surface-soft: #efe6da;
+            --text-main: #2b2b2b;
+            --text-soft: #5a4c43;
+            --accent: #8b6f42;
+            --accent-2: #d6b85a;
+            --peach: #e9dfd2;
+            --line: rgba(162, 138, 84, 0.12);
             --radius-xl: 24px;
             --radius-lg: 16px;
-            --shadow: 0 18px 38px rgba(0, 0, 0, 0.3);
+            --shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+            --gold-deep: #b4892b;
         }
 
         * {
@@ -34,9 +36,9 @@
             font-family: "Nunito", sans-serif;
             color: var(--text-main);
             background:
-                radial-gradient(circle at 85% 10%, rgba(199, 168, 90, 0.22), transparent 32%),
-                radial-gradient(circle at 7% 20%, rgba(197, 187, 172, 0.12), transparent 30%),
-                linear-gradient(150deg, var(--bg), #1a1714 45%, #221d19);
+                radial-gradient(circle at 85% 10%, rgba(214,184,90,0.06), transparent 32%),
+                radial-gradient(circle at 7% 20%, rgba(197, 187, 172, 0.04), transparent 30%),
+                linear-gradient(150deg, var(--bg-main), var(--bg-soft));
             min-height: 100vh;
             padding: 24px 16px;
         }
@@ -57,7 +59,7 @@
         .link-back {
             text-decoration: none;
             color: var(--text-main);
-            background: rgba(255, 255, 255, 0.75);
+            background: rgba(255, 255, 255, 0.95);
             border: 1px solid var(--line);
             border-radius: 999px;
             padding: 9px 14px;
@@ -78,9 +80,9 @@
         .notice {
             margin-bottom: 14px;
             border-radius: var(--radius-xl);
-            border: 1px solid rgba(255, 255, 255, 0.16);
-            background: linear-gradient(120deg, rgba(197, 187, 172, 0.92), rgba(149, 128, 104, 0.92) 48%, rgba(104, 88, 69, 0.96));
-            color: #f7f0e6;
+            border: 1px solid rgba(0,0,0,0.04);
+            background: linear-gradient(120deg, rgba(214,184,90,0.14), rgba(162,138,84,0.08));
+            color: var(--text-main);
             padding: 10px;
             box-shadow: var(--shadow);
             display: grid;
@@ -89,8 +91,8 @@
         }
 
         .notice-chip {
-            background: rgba(17, 17, 17, 0.16);
-            border: 1px solid rgba(255, 255, 255, 0.75);
+            background: rgba(0,0,0,0.06);
+            border: 1px solid rgba(0,0,0,0.04);
             border-radius: 12px;
             padding: 9px 10px;
             display: flex;
@@ -103,7 +105,7 @@
         .notice-chip svg {
             width: 15px;
             height: 15px;
-            stroke: #f7f0e6;
+            stroke: var(--gold-deep);
             stroke-width: 2;
             fill: none;
             flex-shrink: 0;
@@ -111,7 +113,7 @@
 
         .card {
             background: var(--surface);
-            border: 1px solid rgba(255, 255, 255, 0.55);
+            border: 1px solid rgba(0,0,0,0.04);
             border-radius: var(--radius-xl);
             box-shadow: var(--shadow);
         }
@@ -125,6 +127,29 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
+        }
+
+        .booking-video {
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            border: 1px solid rgba(149, 128, 104, 0.18);
+            background: rgba(255, 255, 255, 0.88);
+            box-shadow: var(--shadow);
+        }
+
+        .booking-video .visual-slot {
+            min-height: 320px;
+            padding: 0;
+            border: 0;
+            display: block;
+        }
+
+        .booking-video video {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: contain;
+            background: linear-gradient(140deg, #fff9f0, #e9dfd2);
         }
 
         .section {
@@ -169,8 +194,8 @@
         input:focus,
         select:focus {
             outline: none;
-            border-color: rgba(199, 168, 90, 0.85);
-            box-shadow: 0 0 0 4px rgba(199, 168, 90, 0.2);
+            border-color: rgba(180,150,70,0.85);
+            box-shadow: 0 0 0 4px rgba(214,184,90,0.12);
         }
 
         .services-list {
@@ -198,20 +223,20 @@
         .submit-btn {
             border: none;
             border-radius: 999px;
-            background: linear-gradient(140deg, var(--accent), var(--accent-2));
+            background: linear-gradient(140deg, var(--gold-deep), var(--accent-2));
             color: #fff;
             font-weight: 700;
             font-size: 0.98rem;
             padding: 12px 20px;
             cursor: pointer;
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
         }
 
         .message {
             margin-top: 12px;
-            background: linear-gradient(130deg, rgba(239, 231, 220, 0.88), rgba(216, 204, 188, 0.78));
-            border: 1px solid rgba(149, 128, 104, 0.24);
-            color: #3f342b;
+            background: linear-gradient(130deg, rgba(255,255,255,0.9), rgba(233,223,210,0.8));
+            border: 1px solid rgba(162,138,84,0.12);
+            color: var(--text-main);
             border-radius: 12px;
             padding: 10px 12px;
             font-weight: 700;
@@ -219,13 +244,13 @@
 
         .visual-slot {
             border-radius: var(--radius-lg);
-            border: 2px dashed rgba(199, 168, 90, 0.34);
+            border: 2px dashed rgba(180,150,70,0.24);
             min-height: 150px;
-            background: linear-gradient(140deg, #f8f2e8, #e0d3bf);
+            background: linear-gradient(140deg, #fff9f0, #e9dfd2);
             display: flex;
             align-items: flex-end;
             padding: 12px;
-            color: #4a3d33;
+            color: var(--text-soft);
             font-weight: 700;
             font-size: 0.9rem;
         }
@@ -299,11 +324,11 @@
             z-index: 30;
             text-decoration: none;
             color: #fff;
-            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            background: linear-gradient(135deg, var(--gold-deep), var(--accent-2));
             border-radius: 999px;
             padding: 12px 16px;
             font-weight: 800;
-            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.34);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
             display: inline-flex;
             align-items: center;
             gap: 8px;
@@ -465,13 +490,19 @@
             </form>
 
             <aside class="card helper-card">
-                    <div class="tips">
+                {% if reserva_video %}
+                    <div class="booking-video">
+                        <div class="visual-slot">
+                            <video controls muted playsinline>
+                                <source src="{{ reserva_video.url }}">
+                            </video>
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="tips">
                     <strong>{% trans "Información útil" %}</strong>
                     <p>{% trans "Tu cita queda pendiente hasta confirmar disponibilidad del horario seleccionado." %}</p>
                 </div>
-                <div class="visual-slot">{% trans "Espacio para imagen de promoción" %}</div>
-                <div class="visual-slot">{% trans "Espacio para imagen de producto recomendado" %}</div>
-                <div class="visual-slot">{% trans "Espacio para testimonios o resultados" %}</div>
                 <div class="location-box">
                     <h4>{% trans "Ubicación del local" %}</h4>
                     <p><strong>{% trans "Dirección" %}:</strong> {{ ubicacion_local_direccion }}</p>

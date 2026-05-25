@@ -1,9 +1,11 @@
+from pathlib import Path
+from urllib.parse import quote
+
 from django.shortcuts import render, redirect
 from django.views import View
 from datetime import datetime
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
-
 from .infra.repositories import (
     RepositorioServicioDjango,
     RepositorioClienteDjango,
@@ -14,6 +16,54 @@ from .infra.factories import FactoriaNotificacion
 from .infra.composition import build_ubicacion_local
 from .infra.servicios import GeneradorCodigoReservaUUID
 from .services import ServicioService, ClienteService, DisponibilidadService, ReservaService
+
+
+MEDIA_VISUAL_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.webp', '.gif', '.mp4', '.mov', '.webm', '.mkv', '.avi'}
+MEDIA_SLOT_FILES = {
+    'hero_principal': 'principal.jpg',
+    'hero_secundario_1': 'microblanding.png',
+    'hero_secundario_2': 'Blush Lips.jpg',
+    'hero_secundario_3': 'Logo.png',
+    'galeria_1': 'servicios.mp4',
+    'galeria_2': 'tucita.mp4',
+    'galeria_3': 'Cuidadosdehenna.png',
+    'promo_1': 'microblanding.jpg',
+    'promo_2': 'LaminadoCejas.png',
+    'promo_3': 'Logo.png',
+    'henna_1': 'antesHenna.png',
+    'henna_2': 'DespuesHenna.png',
+    'henna_3': 'Cuidadosdehenna.png',
+    'lifting_1': 'lifting.png',
+    'lifting_2': 'lifting1.png',
+    'lifting_3': 'lifting2.png',
+}
+
+
+def _build_media_url(relative_path: Path) -> str:
+    media_url = getattr(settings, 'MEDIA_URL', '/media/')
+    return f"{media_url}{quote(relative_path.as_posix())}"
+
+
+def _media_item(filename: str) -> dict | None:
+    espacios_dir = Path(getattr(settings, 'MEDIA_ROOT', settings.BASE_DIR / 'media')) / 'espacios'
+    archivo = espacios_dir / filename
+
+    if not archivo.exists():
+        return None
+
+    es_video = archivo.suffix.lower() in {'.mp4', '.mov', '.webm', '.mkv', '.avi'}
+    return {
+        'titulo': archivo.stem.replace('_', ' ').replace('-', ' ').title(),
+        'descripcion': _('Archivo guardado en media/espacios'),
+        'url': _build_media_url(Path('espacios') / archivo.name),
+        'es_video': es_video,
+    }
+
+def _build_slot_context() -> dict:
+    return {
+        name: _media_item(filename)
+        for name, filename in MEDIA_SLOT_FILES.items()
+    }
 
 
 def _build_ubicacion_context() -> dict:
@@ -37,11 +87,13 @@ class HomeView(View):
         
         # Obtener servicios usando el service layer
         servicios = servicio_service.listar_servicios_activos()
+        slots = _build_slot_context()
         
         context = {
             'titulo': _('Bienvenido a Aurora Studio'),
             'descripcion': _('Tu belleza, nuestra pasión'),
             'servicios': servicios,
+            **slots,
         }
         context.update(_build_ubicacion_context())
         
@@ -58,7 +110,10 @@ class ReservaView(View):
         servicio_service = ServicioService(repositorio_servicio=repo_servicio)
         servicios = servicio_service.listar_servicios_activos()
         
-        context = {'servicios': servicios}
+        context = {
+            'servicios': servicios,
+            'reserva_video': _media_item('tucita.mp4'),
+        }
         context.update(_build_ubicacion_context())
         return render(request, self.template_name, context)
     

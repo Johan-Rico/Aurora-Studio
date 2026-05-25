@@ -18,6 +18,7 @@ services:
     command: sh -c "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn aurora_studio.wsgi:application --bind 0.0.0.0:8000 --workers 3"
     volumes:
       - ./db.sqlite3:/app/db.sqlite3
+      - ./media:/app/media
     ports:
       - "8000:8000"
     restart: unless-stopped
@@ -51,6 +52,7 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./staticfiles:/usr/share/nginx/html/static:ro
+      - ./media:/usr/share/nginx/html/media:ro
     restart: unless-stopped
 
   redis:

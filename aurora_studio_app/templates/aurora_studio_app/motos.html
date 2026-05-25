@@ -7,24 +7,36 @@
     <title>{% trans "Motos" %} - {{ ubicacion_local_nombre }}</title>
     <link rel="stylesheet" href="{% static 'aurora_studio_app/css/overrides.css' %}">
     <style>
-        :root{--card:#fff9f0;--accent:#695845;--shadow:0 12px 30px rgba(0,0,0,0.18);}
-        body{font-family:Nunito,system-ui,Arial;margin:0;background:linear-gradient(180deg,#f5f0eb,#efe7dc);color:#2b2621}
+        :root {
+            --bg-main: #fbf8f3;
+            --bg-soft: #f2ebe2;
+            --card: #fffdf9;
+            --accent: #8b6f42;
+            --gold: #d6b85a;
+            --gold-deep: #b4892b;
+            --text-main: #2b2b2b;
+            --text-soft: #5a4c43;
+            --shadow: 0 12px 30px rgba(0,0,0,0.12);
+            --radius-lg: 12px;
+        }
+
+        body{font-family:Nunito,system-ui,Arial;margin:0;background:linear-gradient(180deg,var(--bg-main),var(--bg-soft));color:var(--text-main)}
         .page-shell{max-width:920px;margin:18px auto;padding:20px}
         .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
         h1{font-family:'Playfair Display',serif;margin:0;font-size:2rem}
         .grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:16px}
         .card{background:var(--card);border-radius:16px;padding:12px;border:1px solid rgba(0,0,0,0.04);box-shadow:var(--shadow);display:grid;grid-template-columns:130px 1fr;gap:12px;align-items:stretch}
-        .thumb{width:100%;min-height:96px;background:linear-gradient(145deg,#ddd,#c8beb1);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#7a6a5a;font-weight:800;font-size:1rem}
+        .thumb{width:100%;min-height:96px;background:linear-gradient(145deg,#fff9f0,#e9dfd2);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--text-soft);font-weight:800;font-size:1rem}
         .meta{display:flex;flex-direction:column;justify-content:space-between;gap:10px}
         .meta h3{margin:0 0 4px 0;font-size:1.02rem}
-        .meta p{margin:0;color:#6a5e54}
-        .price{font-weight:900;color:var(--accent);font-size:1rem}
+        .meta p{margin:0;color:var(--text-soft)}
+        .price{font-weight:900;color:var(--gold-deep);font-size:1rem}
         .right{display:flex;flex-direction:column;justify-content:center;align-items:flex-end;text-align:right;gap:6px}
-        .badge{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;background:rgba(105,88,69,0.08);color:#5a4a3d;font-size:0.78rem;font-weight:700}
+        .badge{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;background:rgba(180,150,70,0.08);color:var(--text-soft);font-size:0.78rem;font-weight:700}
         .filters{display:flex;gap:8px;align-items:center}
         .btn{padding:7px 11px;border-radius:999px;text-decoration:none;font-size:0.92rem}
         .btn-soft{background:#fff;border:1px solid rgba(0,0,0,0.06)}
-        .loading{padding:22px;text-align:center;color:#6a5e54;font-size:0.95rem}
+        .loading{padding:22px;text-align:center;color:var(--text-soft);font-size:0.95rem}
     </style>
 </head>
 <body>

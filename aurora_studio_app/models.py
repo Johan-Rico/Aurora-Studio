@@ -1,5 +1,6 @@
-from django.db import models
+from django.core.exceptions import ValidationError
 from django.core.validators import EmailValidator, RegexValidator
+from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
@@ -130,4 +131,52 @@ class Disponibilidad(models.Model):
 
     def __str__(self) -> str:
         return f"{self.get_dia_semana_display()}: {self.hora_apertura} - {self.hora_cierre}"
+
+
+class ContenidoVisual(models.Model):
+    """Archivos visuales para mostrar en los espacios de la app."""
+
+    TIPO_IMAGEN = 'imagen'
+    TIPO_VIDEO = 'video'
+    TIPO_CHOICES = [
+        (TIPO_IMAGEN, _('Imagen')),
+        (TIPO_VIDEO, _('Video')),
+    ]
+
+    EXTENSIONES_IMAGEN = ('.jpg', '.jpeg', '.png', '.webp', '.gif')
+    EXTENSIONES_VIDEO = ('.mp4', '.mov', '.webm', '.mkv', '.avi')
+
+    titulo = models.CharField(max_length=160)
+    descripcion = models.CharField(max_length=255, blank=True)
+    archivo = models.FileField(upload_to='espacios/')
+    tipo = models.CharField(max_length=10, choices=TIPO_CHOICES, editable=False)
+    creado_en = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-creado_en']
+        verbose_name_plural = _('Contenidos visuales')
+
+    def save(self, *args, **kwargs):
+        if self.archivo:
+            archivo_nombre = self.archivo.name.lower()
+            if archivo_nombre.endswith(self.EXTENSIONES_IMAGEN):
+                self.tipo = self.TIPO_IMAGEN
+            elif archivo_nombre.endswith(self.EXTENSIONES_VIDEO):
+                self.tipo = self.TIPO_VIDEO
+            else:
+                raise ValidationError(
+                    _('Solo se permiten imágenes o videos en formato común (jpg, png, mp4, webm, mov).')
+                )
+        super().save(*args, **kwargs)
+
+    @property
+    def es_video(self) -> bool:
+        return self.tipo == self.TIPO_VIDEO
+
+    @property
+    def es_imagen(self) -> bool:
+        return self.tipo == self.TIPO_IMAGEN
+
+    def __str__(self) -> str:
+        return self.titulo
 

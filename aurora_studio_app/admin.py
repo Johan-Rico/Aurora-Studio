@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Usuario, Cliente, Servicio, Reserva, DetalleCita, Disponibilidad
+from .models import Usuario, Cliente, Servicio, Reserva, DetalleCita, Disponibilidad, ContenidoVisual
 
 
 @admin.register(Usuario)
@@ -47,3 +47,10 @@ class DetalleCitaAdmin(admin.ModelAdmin):
 class DisponibilidadAdmin(admin.ModelAdmin):
     list_display = ('dia_semana', 'hora_apertura', 'hora_cierre', 'horas_bloqueadas')
     list_filter = ('dia_semana',)
+
+
+@admin.register(ContenidoVisual)
+class ContenidoVisualAdmin(admin.ModelAdmin):
+    list_display = ('titulo', 'tipo', 'creado_en')
+    list_filter = ('tipo', 'creado_en')
+    search_fields = ('titulo', 'descripcion')

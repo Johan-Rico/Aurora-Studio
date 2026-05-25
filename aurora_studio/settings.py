@@ -144,6 +144,8 @@ STATIC_URL = 'static/'
 # Evitar advertencias si el directorio no existe en desarrollo
 STATICFILES_DIRS = [p for p in (BASE_DIR / 'frontend' / 'static', BASE_DIR / 'static') if p.exists()]
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # Para producción (collectstatic)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Internacionalización
 from django.utils.translation import gettext_lazy as _  # noqa: E402
