@@ -85,25 +85,9 @@
             gap: 10px;
             font-weight: 700;
             font-size: 1.05rem;
-        }
-
-        .brand-mark {
-            width: 38px;
-            height: 38px;
-            border-radius: 12px;
-            background: linear-gradient(150deg, var(--gold), var(--brown));
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.28);
-        }
-
-        .brand-mark svg {
-            width: 20px;
-            height: 20px;
-            stroke: #fff;
-            stroke-width: 2;
-            fill: none;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: var(--brown);
         }
 
         .hero {
@@ -233,11 +217,22 @@
             font-family: "Playfair Display", serif;
             font-size: 1.75rem;
             margin-bottom: 6px;
+            color: #f7f0e6;
+            text-shadow: 0 1px 10px rgba(0, 0, 0, 0.35);
         }
 
         .section-sub {
-            color: var(--text-soft);
+            color: rgba(247, 240, 230, 0.82);
             margin-bottom: 16px;
+        }
+
+        .quote-box .section-title {
+            color: var(--brown);
+            text-shadow: none;
+        }
+
+        .quote-box .section-sub {
+            color: var(--text-soft);
         }
 
         .services-grid {
@@ -776,14 +771,12 @@
     <div class="page-shell">
         <header class="topbar">
             <div class="brand">
-                <span class="brand-mark" aria-hidden="true">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12 3c1.8 2.7 4.5 4.2 7.5 4.5-1 5.8-4 9.6-7.5 13-3.5-3.4-6.5-7.2-7.5-13C7.5 7.2 10.2 5.7 12 3Z"></path>
-                    </svg>
-                </span>
-                <span>aurora</span>
+                <span>AURORA</span>
             </div>
-            <a class="btn btn-soft" href="{% url 'reserva' %}">{% trans "Reservar ahora" %}</a>
+            <nav style="display:flex; gap:8px;">
+                <a class="btn btn-soft" href="{% url 'reserva' %}">{% trans "Reservar ahora" %}</a>
+                <a class="btn btn-primary" href="{% url 'motos' %}">{% trans "Ver motos" %}</a>
+            </nav>
         </header>
 
         <div class="info-strip">

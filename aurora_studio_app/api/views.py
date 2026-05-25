@@ -14,6 +14,7 @@ from aurora_studio_app.infra.composition import (
 	build_disponibilidad_service,
 	build_reserva_service,
 	build_servicio_service,
+	build_motos_adapter,
 )
 
 
@@ -92,3 +93,23 @@ class ReservaCancelByCodeAPIView(APIView):
 			if "no se pueden cancelar reservas pasadas" in message:
 				return Response({"detail": str(exc)}, status=status.HTTP_409_CONFLICT)
 			return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ExternalMotosListAPIView(APIView):
+	"""Proxy read-only hacia la API externa de motos.
+
+	Soporta query params: `categoria` y `q`.
+	Devuelve la lista tal cual provenga del proveedor externo.
+	"""
+
+	def get(self, request):
+		categoria = request.query_params.get('categoria')
+		q = request.query_params.get('q')
+		adapter = build_motos_adapter()
+		try:
+			motos = adapter.listar_motos(categoria=categoria, q=q)
+			return Response(motos, status=status.HTTP_200_OK)
+		except RuntimeError as exc:
+			return Response({'detail': str(exc)}, status=status.HTTP_502_BAD_GATEWAY)
+		except Exception as exc:
+			return Response({'detail': f'Error inesperado: {exc}'}, status=status.HTTP_502_BAD_GATEWAY)

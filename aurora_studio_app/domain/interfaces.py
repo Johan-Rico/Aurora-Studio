@@ -38,6 +38,22 @@ class GeneradorCodigoReserva(ABC):
 		raise NotImplementedError
 
 
+class UbicacionLocal(ABC):
+	"""Interfaz para obtener datos y enlaces de la ubicación del local."""
+
+	@abstractmethod
+	def obtener_direccion(self) -> str:
+		raise NotImplementedError
+
+	@abstractmethod
+	def obtener_url_mapa(self) -> str:
+		raise NotImplementedError
+
+	@abstractmethod
+	def obtener_url_ruta(self) -> str:
+		raise NotImplementedError
+
+
 # ========== INTERFACES DE REPOSITORIOS ==========
 
 class RepositorioServicio(ABC):

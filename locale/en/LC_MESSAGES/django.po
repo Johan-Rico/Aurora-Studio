@@ -152,6 +152,10 @@ msgstr "No booking exists for that email and code"
 msgid "Reservar ahora"
 msgstr "Book now"
 
+#: .\aurora_studio_app\templates\aurora_studio_app\home.html:723
+msgid "Ver motos"
+msgstr "View bikes"
+
 #: .\aurora_studio_app\templates\aurora_studio_app\home.html:728
 msgid "Agenda por cita y atención con tiempo"
 msgstr "By-appointment scheduling with enough time"

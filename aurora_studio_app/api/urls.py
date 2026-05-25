@@ -5,6 +5,7 @@ from .views import (
     ReservaCancelByCodeAPIView,
     ReservaCreateAPIView,
     ServicioListAPIView,
+    ExternalMotosListAPIView,
 )
 
 urlpatterns = [
@@ -12,4 +13,5 @@ urlpatterns = [
     path("reservas/", ReservaCreateAPIView.as_view(), name="api-reservas-create"),
     path("reservas/cancel/", ReservaCancelByCodeAPIView.as_view(), name="api-reservas-cancel-by-code"),
     path("disponibilidad/", DisponibilidadFechaAPIView.as_view(), name="api-disponibilidad-fecha"),
+    path("motos-externas/", ExternalMotosListAPIView.as_view(), name="api-motos-externas-list"),
 ]

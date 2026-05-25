@@ -11,12 +11,13 @@ from .infra.repositories import (
     RepositorioDisponibilidadDjango
 )
 from .infra.factories import FactoriaNotificacion
-from .infra.servicios import GeneradorCodigoReservaUUID, UbicacionLocalGoogleMapsAdapter
+from .infra.composition import build_ubicacion_local
+from .infra.servicios import GeneradorCodigoReservaUUID
 from .services import ServicioService, ClienteService, DisponibilidadService, ReservaService
 
 
 def _build_ubicacion_context() -> dict:
-    adaptador = UbicacionLocalGoogleMapsAdapter()
+    adaptador = build_ubicacion_local()
     return {
         'ubicacion_local_nombre': getattr(settings, 'BUSINESS_NAME', 'Aurora Studio'),
         'ubicacion_local_direccion': adaptador.obtener_direccion(),
@@ -127,3 +128,18 @@ class ReservaView(View):
                 'mensaje': _('Error: ') + str(e),
                 **_build_ubicacion_context(),
             })
+
+
+class MotosPageView(View):
+    """Página que muestra la lista de motos consumiendo nuestro proxy interno.
+
+    La plantilla usa `fetch()` hacia `/api/v1/motos-externas/` y renderiza tarjetas.
+    """
+    template_name = 'aurora_studio_app/motos.html'
+
+    def get(self, request):
+        context = {
+            'titulo': _('Motos disponibles'),
+        }
+        context.update(_build_ubicacion_context())
+        return render(request, self.template_name, context)

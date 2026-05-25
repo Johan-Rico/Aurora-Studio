@@ -7,7 +7,7 @@ from aurora_studio_app.infra.repositories import (
 	RepositorioReservaDjango,
 	RepositorioServicioDjango,
 )
-from aurora_studio_app.infra.servicios import GeneradorCodigoReservaUUID
+from aurora_studio_app.infra.servicios import ExternalMotosAdapter, GeneradorCodigoReservaUUID, UbicacionLocalGoogleMapsAdapter
 from aurora_studio_app.services import (
 	ClienteService,
 	DisponibilidadService,
@@ -48,3 +48,13 @@ def build_reserva_service() -> ReservaService:
 		enviador_notificacion=FactoriaNotificacion.crear_enviador(),
 		generador_codigo=GeneradorCodigoReservaUUID(),
 	)
+
+
+def build_motos_adapter() -> ExternalMotosAdapter:
+	"""Factory simple para construir el adaptador de motos externas."""
+	return ExternalMotosAdapter()
+
+
+def build_ubicacion_local() -> UbicacionLocalGoogleMapsAdapter:
+	"""Factory para la ubicación del local usando el adaptador de Google Maps."""
+	return UbicacionLocalGoogleMapsAdapter()

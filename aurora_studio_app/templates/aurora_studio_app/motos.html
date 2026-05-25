@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="es">
+<head>
+    {% load i18n static %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>{% trans "Motos" %} - {{ ubicacion_local_nombre }}</title>
+    <link rel="stylesheet" href="{% static 'aurora_studio_app/css/overrides.css' %}">
+    <style>
+        :root{--card:#fff9f0;--accent:#695845;--shadow:0 12px 30px rgba(0,0,0,0.18);}
+        body{font-family:Nunito,system-ui,Arial;margin:0;background:linear-gradient(180deg,#f5f0eb,#efe7dc);color:#2b2621}
+        .page-shell{max-width:920px;margin:18px auto;padding:20px}
+        .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+        h1{font-family:'Playfair Display',serif;margin:0;font-size:2rem}
+        .grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:16px}
+        .card{background:var(--card);border-radius:16px;padding:12px;border:1px solid rgba(0,0,0,0.04);box-shadow:var(--shadow);display:grid;grid-template-columns:130px 1fr;gap:12px;align-items:stretch}
+        .thumb{width:100%;min-height:96px;background:linear-gradient(145deg,#ddd,#c8beb1);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#7a6a5a;font-weight:800;font-size:1rem}
+        .meta{display:flex;flex-direction:column;justify-content:space-between;gap:10px}
+        .meta h3{margin:0 0 4px 0;font-size:1.02rem}
+        .meta p{margin:0;color:#6a5e54}
+        .price{font-weight:900;color:var(--accent);font-size:1rem}
+        .right{display:flex;flex-direction:column;justify-content:center;align-items:flex-end;text-align:right;gap:6px}
+        .badge{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;background:rgba(105,88,69,0.08);color:#5a4a3d;font-size:0.78rem;font-weight:700}
+        .filters{display:flex;gap:8px;align-items:center}
+        .btn{padding:7px 11px;border-radius:999px;text-decoration:none;font-size:0.92rem}
+        .btn-soft{background:#fff;border:1px solid rgba(0,0,0,0.06)}
+        .loading{padding:22px;text-align:center;color:#6a5e54;font-size:0.95rem}
+    </style>
+</head>
+<body>
+    <div class="page-shell">
+        <header class="topbar">
+            <div>
+                <h1>{% trans "Motos disponibles" %}</h1>
+                <div class="filters">
+                    <small>{% trans "Fuente" %}: /api/v1/motos-externas/</small>
+                </div>
+            </div>
+            <a class="btn btn-soft" href="{% url 'home' %}">{% trans "Volver" %}</a>
+        </header>
+
+        <div id="motos-root">
+            <div class="loading">{% trans "Cargando motos..." %}</div>
+        </div>
+
+    </div>
+
+    <script>
+        async function renderMotos(){
+            const root = document.getElementById('motos-root');
+            try{
+                const res = await fetch('/api/v1/motos-externas/');
+                if(!res.ok) throw new Error('Estado '+res.status);
+                const data = await res.json();
+                if(!Array.isArray(data)) throw new Error('Respuesta inesperada');
+                const grid = document.createElement('div');
+                grid.className = 'grid';
+                data.forEach(m => {
+                    const card = document.createElement('article');
+                    card.className = 'card';
+
+                    const thumb = document.createElement('div');
+                    thumb.className = 'thumb';
+                    thumb.textContent = m.imagen ? '' : (m.modelo || '—').split(' ').slice(0,2).map(s=>s[0]||'').join('');
+
+                    const meta = document.createElement('div');
+                    meta.className = 'meta';
+                    const title = document.createElement('h3');
+                    title.textContent = m.modelo || '';
+                    const subtitle = document.createElement('p');
+                    subtitle.textContent = (m.categoria_display || m.categoria || '') + ' • ' + (m.anio || '');
+
+                    const right = document.createElement('div');
+                    right.className = 'right';
+                    const price = document.createElement('div');
+                    price.className = 'price';
+                    price.textContent = m.precio_formateado || (m.precio ? ('$'+m.precio) : '');
+                    const stock = document.createElement('div');
+                    stock.className = 'badge';
+                    stock.textContent = (m.disponible ? ('{% trans "En stock" %}') : ('{% trans "Agotado" %}')) + (m.stock ? (' • '+m.stock) : '');
+
+                    meta.appendChild(title);
+                    meta.appendChild(subtitle);
+                    right.appendChild(price);
+                    right.appendChild(stock);
+
+                    card.appendChild(thumb);
+                    card.appendChild(meta);
+                    card.appendChild(right);
+
+                    grid.appendChild(card);
+                });
+                root.innerHTML='';
+                root.appendChild(grid);
+            }catch(e){
+                root.innerHTML = `<div class="loading">Error al cargar: ${e.message}</div>`;
+            }
+        }
+        document.addEventListener('DOMContentLoaded', renderMotos);
+    </script>
+</body>
+</html>

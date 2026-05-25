@@ -10,10 +10,10 @@ import uuid
 
 from django.conf import settings
 
-from aurora_studio_app.domain.interfaces import EnviadorNotificacion, GeneradorCodigoReserva
+from aurora_studio_app.domain.interfaces import EnviadorNotificacion, GeneradorCodigoReserva, UbicacionLocal
 
 
-class UbicacionLocalGoogleMapsAdapter:
+class UbicacionLocalGoogleMapsAdapter(UbicacionLocal):
 	def __init__(self, direccion: str | None = None):
 		self.direccion = direccion or getattr(settings, "BUSINESS_ADDRESS", "Cll 63 Sur #43 a12 local Torre Alcántara")
 
@@ -33,6 +33,53 @@ class UbicacionLocalGoogleMapsAdapter:
 			"BUSINESS_MAPS_DIRECTIONS_URL",
 			f"https://www.google.com/maps/search/?api=1&query={quote_plus(self.direccion)}",
 		)
+
+
+class ExternalMotosAdapter:
+	"""Adaptador para consumir la API externa de motos proporcionada por otro equipo.
+
+	Soporta listar motos con filtros `categoria` y `q` (búsqueda por modelo).
+	Usa el header `X-API-Key` según la especificación.
+	"""
+
+	def __init__(self, base_url: str | None = None, api_key: str | None = None, timeout_seconds: float = 8.0):
+		self.base_url = base_url or getattr(settings, 'EXTERNAL_MOTOS_BASE_URL', 'http://52.54.140.72/api/public/v1/motos/')
+		if not self.base_url.endswith('/'):
+			self.base_url = f"{self.base_url}/"
+		self.api_key = api_key or getattr(settings, 'EXTERNAL_MOTOS_API_KEY', 'yamaha-grupo-2026')
+		self.timeout_seconds = timeout_seconds
+
+	def listar_motos(self, *, categoria: str | None = None, q: str | None = None) -> list[dict]:
+		# Construir query string simple
+		params = []
+		if categoria:
+			params.append(f"categoria={quote_plus(str(categoria))}")
+		if q:
+			params.append(f"q={quote_plus(str(q))}")
+		query = f"?{'&'.join(params)}" if params else ""
+
+		url = f"{self.base_url}{query}"
+
+		req = urllib_request.Request(url=url, method='GET')
+		# Header de autenticación requerido por el otro equipo
+		req.add_header('X-API-Key', self.api_key)
+
+		try:
+			with urllib_request.urlopen(req, timeout=self.timeout_seconds) as resp:
+				if resp.status != 200:
+					raise RuntimeError(f"API externa respondió con estado {resp.status}")
+				body = resp.read().decode('utf-8')
+				try:
+					return json.loads(body)
+				except (json.JSONDecodeError, ValueError) as exc:
+					raise RuntimeError(f"La API externa respondió un cuerpo no JSON: {body[:200]}") from exc
+		except urllib_error.HTTPError as exc:
+			body = exc.read().decode('utf-8', errors='replace')
+			raise RuntimeError(f"Error HTTP al consultar API externa: {exc.code} {body}") from exc
+		except (urllib_error.URLError, OSError) as exc:
+			raise RuntimeError("No se pudo conectar con la API externa de motos") from exc
+		except Exception as exc:
+			raise RuntimeError(f"Error inesperado al consultar la API externa de motos: {exc}") from exc
 
 
 class EnviadorNotificacionTercero(EnviadorNotificacion):

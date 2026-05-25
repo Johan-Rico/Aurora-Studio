@@ -191,3 +191,10 @@ CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND', CELERY_BROKER_UR
 
 # Habilitar envío de notificaciones de forma asíncrona mediante Celery
 NOTIFICATIONS_ASYNC = os.environ.get('NOTIFICATIONS_ASYNC', '0') == '1'
+
+# Configuración de la API externa de motos (proveída por otro equipo)
+EXTERNAL_MOTOS_BASE_URL = os.environ.get(
+    'EXTERNAL_MOTOS_BASE_URL',
+    'http://52.54.140.72/api/public/v1/motos/'
+)
+EXTERNAL_MOTOS_API_KEY = os.environ.get('EXTERNAL_MOTOS_API_KEY', 'yamaha-grupo-2026')
